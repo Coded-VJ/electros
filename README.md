@@ -7,7 +7,7 @@ Electros is a web-based consumer electronics storefront developed using HTML, Ta
 
 ## Live Demo
 
-* **GitHub Pages URL:** `https://<your-github-username>.github.io/<your-repo-name>/`
+* **GitHub Pages URL:** `https://coded-vj.github.io/electros/`
 
 ## Features
 
@@ -42,23 +42,24 @@ your-repo-name/
 ├── support.html        # End-to-end order tracking & customer support tickets
 ├── data.js             # Product catalog dataset (30 items across 6 categories)
 ├── DIAGRAMS.md         # Use-Case, Sequence, State Machine, Activity & Class diagrams
-└── README.md           # Project documentation 
+└── README.md           # Project documentation
+``` 
 
-Clone this repository:
-
-Bash
-git clone [https://github.com/](https://github.com/)<your-github-username>/<your-repo-name>.git
-Open the project directory:
-
-Bash
-cd <your-repo-name>
-Launch the application in your browser:
-
+## Installation and Setup 
+  
+1. Clone this repository:
+```text
+git clone [https://github.com/](https://github.com/)<https://coded-vj.github.io/electros/>.git
+```
+2.Open the project directory:
+```text
+cd <electros>
+```
+3.Launch the application in your browser:
 Double-click index.html to open it directly in any web browser, or
+Open the folder in VS Code and click Go Live 
 
-Open the folder in VS Code and click Go Live (using the Live Server extension) to view it at http://127.0.0.1:5500/.
-
-Important Notes
+## Important Notes
 This is an academic project developed as part of the Software Development Fundamentals (SDF) course.
 
 OTP verification, UPI QR scanning, payment processing, and delivery stage progression are simulated for demonstration purposes.
@@ -67,9 +68,10 @@ Product listings, pricing, stock counts, and offers use demonstration data.
 
 No real financial or payment transactions are processed.
 
-Developed By
+## Developed By
+
+
 Vaishnavi J
 
 B.Tech – Mathematics and Computing
 
-MS Ramaiah University of Applied Sciences
