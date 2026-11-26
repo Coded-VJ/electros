@@ -1,0 +1,1276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#222831">
+  <meta name="description" content="Discover everyday tech, thoughtfully picked. Shop wearables, audio, monitors and accessories at Electros.">
+  <title>Electros — Built for your everyday</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#222831",
+            panel: "#393E46",
+            muted: "#948979",
+            sand: "#DFD0B8"
+          },
+          fontFamily: {
+            sans: ["Manrope", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #222831; color: #DFD0B8; font-family: Manrope, sans-serif; }
+    button, input { font: inherit; }
+    .grain { background-image: radial-gradient(rgba(223,208,184,.13) .55px, transparent .55px); background-size: 5px 5px; }
+    .hero-glow { background: radial-gradient(ellipse at 68% 48%, rgba(223,208,184,.13), transparent 42%); }
+    .product-image { transition: transform .45s cubic-bezier(.2,.7,.2,1); }
+    .product-card:hover .product-image { transform: scale(1.055); }
+    .drawer-surface { transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+    .wishlist-active { color: #FACC15; border-color: rgba(250,204,21,.48); background: rgba(250,204,21,.1); }
+    .volted-icon { filter: drop-shadow(0 0 4px rgba(250,204,21,.72)); }
+    .filter-button.filter-active { background: #DFD0B8; color: #111827; border-color: #DFD0B8; font-weight: 700; }
+    .filter-button.filter-active span { color: #111827; opacity: 1; font-weight: 700; }
+    .stock-in { color: #8ce0aa; background: rgba(56,161,105,.14); }
+    .stock-low { color: #f3c66e; background: rgba(217,150,45,.15); }
+    .stock-out { color: #b6b8bc; background: rgba(148,137,121,.2); }
+    .swatch-selected { outline: 2px solid #DFD0B8; outline-offset: 2px; }
+    .scrollbar-hide { scrollbar-width: none; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="sticky top-0 z-30 border-b border-white/10 bg-ink/90 backdrop-blur-xl">
+    <div class="mx-auto max-w-[1440px] px-5 sm:px-8">
+      <div class="flex h-[76px] items-center gap-5">
+        <a href="#" class="flex shrink-0 items-center gap-2.5" aria-label="Electros home">
+          <span class="grid h-9 w-9 place-items-center rounded-xl bg-sand text-ink">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.7 13h5.1l-.5 8.2L18.3 11h-5.2l.1-8.2Z" fill="currentColor"/></svg>
+          </span>
+          <span class="text-xl font-extrabold tracking-[-.07em]">electros<span class="text-sand">.</span></span>
+        </a>
+
+        <nav class="hidden items-center gap-6 pl-7 text-[13px] font-semibold text-white/65 lg:flex" aria-label="Main navigation">
+          <a class="transition hover:text-white" href="#shop">Shop all</a>
+          <a class="transition hover:text-white" href="#shop" data-nav-filter="Smartwatches">Wearables</a>
+          <a class="transition hover:text-white" href="#shop" data-nav-filter="Earbuds">Audio</a>
+          <a class="transition hover:text-white" href="#shop">Top picks</a>
+          <a class="transition hover:text-white" href="support.html">Support</a>
+        </nav>
+
+        <label class="relative ml-auto hidden w-full max-w-[340px] md:block">
+          <span class="sr-only">Search products</span>
+          <svg class="absolute left-3.5 top-1/2 h-[17px] w-[17px] -translate-y-1/2 text-white/40" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <input id="search-input" type="search" placeholder="Search products..." class="h-10 w-full rounded-xl border border-white/10 bg-white/[.045] pl-10 pr-4 text-[12px] text-white outline-none placeholder:text-white/35 focus:border-sand/60">
+          <kbd class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-white/10 px-1.5 py-0.5 text-[10px] text-white/35 xl:block">⌘ K</kbd>
+        </label>
+
+        <div class="ml-auto flex shrink-0 items-center gap-1.5 sm:ml-0 sm:gap-2">
+          <a id="login-button" href="login.html" class="flex max-w-[82px] items-center gap-1.5 truncate text-[10px] font-bold text-white/75 transition hover:text-white sm:max-w-none sm:gap-2 sm:text-[12px]" aria-label="Sign in">
+            <svg viewBox="0 0 24 24" class="h-[18px] w-[18px] shrink-0" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.3" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 20c.5-3.4 2.7-5.1 6.5-5.1s6 1.7 6.5 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span id="login-label" class="truncate">Sign in</span>
+          </a>
+          <button id="logout-button" class="hidden rounded-lg border border-white/10 px-2 py-1 text-[9px] font-bold text-white/55 transition hover:border-white/25 hover:text-white sm:text-[10px]" type="button">Logout</button>
+        </div>
+        <a id="wishlist-link" href="profile.html#my-wishlist" class="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[.045] transition hover:border-white/25" aria-label="Wishlist, 0 items">
+          <svg viewBox="0 0 24 24" class="h-[19px] w-[19px]" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.7 13h5.1l-.5 8.2L18.3 11h-5.2l.1-8.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="wishlist-count" class="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-sand px-1 text-[10px] font-extrabold text-ink">0</span>
+        </a>
+        <button id="cart-button" class="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[.045] transition hover:border-white/25" type="button" aria-label="Shopping cart, 0 items">
+          <svg viewBox="0 0 24 24" class="h-[19px] w-[19px]" fill="none" aria-hidden="true"><path d="M4.5 8h15l-1.1 11h-13L4.5 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V6.2a3 3 0 0 1 6 0V8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span id="cart-count" class="absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-sand px-1 text-[10px] font-extrabold text-ink">0</span>
+        </button>
+      </div>
+      <div class="mb-3 flex items-center gap-3 md:hidden">
+        <label class="relative min-w-0 flex-1">
+          <span class="sr-only">Search products</span>
+          <svg class="absolute left-3.5 top-1/2 h-[17px] w-[17px] -translate-y-1/2 text-white/40" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <input id="search-input-mobile" type="search" placeholder="Search products..." class="h-10 w-full rounded-xl border border-white/10 bg-white/[.045] pl-10 pr-4 text-[12px] text-white outline-none placeholder:text-white/35 focus:border-sand/60">
+        </label>
+        <a href="support.html" class="shrink-0 rounded-lg border border-white/10 px-3 py-2.5 text-[10px] font-bold text-sand/80 transition hover:border-white/25 hover:text-sand">Support</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="mx-auto max-w-[1440px] px-5 pb-12 pt-6 sm:px-8 sm:pb-16 sm:pt-8">
+      <div class="hero-glow relative isolate min-h-[410px] overflow-hidden rounded-[26px] border border-white/[.08] bg-panel sm:min-h-[470px] lg:min-h-[510px]">
+        <div class="grain absolute inset-0 -z-10 opacity-[.14]"></div>
+        <div class="relative z-10 flex min-h-[410px] items-center px-7 py-12 sm:min-h-[470px] sm:px-12 lg:min-h-[510px] lg:px-[7.5%]">
+          <div class="max-w-[530px]">
+            <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-sand/25 bg-sand/[.08] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[.16em] text-sand">
+              <span class="h-1.5 w-1.5 rounded-full bg-sand"></span> Your everyday, upgraded
+            </div>
+            <h1 class="max-w-[510px] text-[42px] font-extrabold leading-[1.03] tracking-[-.065em] sm:text-[58px] lg:text-[60px]">A little more <span class="text-sand">wow.</span><br>Every single day.</h1>
+            <p class="mt-5 max-w-[390px] text-[13px] leading-6 text-white/55 sm:text-[14px]">Good tech should feel good. Find your next everyday essential, picked for the way India lives.</p>
+            <div class="mt-8 flex flex-wrap items-center gap-3">
+              <a href="#shop" class="inline-flex h-12 items-center gap-3 rounded-xl bg-sand px-5 text-[12px] font-extrabold text-ink transition hover:bg-[#e8dcc5]">
+                Explore the collection
+                <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M3.5 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+              <span class="px-2 text-[11px] font-semibold text-white/40">Free delivery over ₹999</span>
+            </div>
+            <div class="mt-9 flex items-center gap-3 text-[10px] font-semibold text-white/50">
+              <div class="flex -space-x-2">
+                <span class="grid h-7 w-7 place-items-center rounded-full border-2 border-[#393E46] bg-[#948979] text-[9px] text-ink">A</span>
+                <span class="grid h-7 w-7 place-items-center rounded-full border-2 border-[#393E46] bg-sand text-[9px] text-ink">R</span>
+                <span class="grid h-7 w-7 place-items-center rounded-full border-2 border-[#393E46] bg-[#948979] text-[9px] text-ink">S</span>
+              </div>
+              <span><strong class="text-white">4.8/5</strong> from 12,000+ happy customers</span>
+            </div>
+          </div>
+          <div class="absolute -right-[18%] top-1/2 hidden h-[500px] w-[66%] -translate-y-1/2 lg:-right-[18%] lg:block lg:h-[580px] lg:w-[58%]">
+            <div class="absolute inset-0 rounded-full bg-sand/[.055] blur-3xl"></div>
+            <img src="https://images.pexels.com/photos/9142237/pexels-photo-9142237.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="White smartwatch photographed on a clean background" class="absolute inset-0 h-full w-full object-cover object-center opacity-90 mix-blend-screen" fetchpriority="high" onerror="this.onerror=null;this.src=PRODUCT_IMAGE_FALLBACK">
+            <div class="absolute inset-0 bg-gradient-to-r from-[#393E46] via-[#393E46]/15 to-transparent"></div>
+            <div class="absolute bottom-[17%] left-[12%] rounded-2xl border border-white/15 bg-ink/75 px-4 py-3 shadow-2xl backdrop-blur-md">
+              <p class="text-[9px] font-bold uppercase tracking-[.15em] text-sand">New drop</p>
+              <p class="mt-1 text-[13px] font-extrabold">Pulse Pro Watch</p>
+              <p class="mt-0.5 text-[11px] text-white/55">From ₹3,499</p>
+            </div>
+          </div>
+          <div class="absolute bottom-5 right-6 text-[9px] font-bold uppercase tracking-[.22em] text-white/30 md:hidden">Tech that gets you.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-[1440px] px-5 pb-16 sm:px-8 sm:pb-24" id="shop">
+      <div class="mb-7 flex flex-wrap items-end justify-between gap-5">
+        <div>
+          <p class="mb-2 text-[10px] font-extrabold uppercase tracking-[.19em] text-sand">The good stuff</p>
+          <h2 class="text-[27px] font-extrabold tracking-[-.055em] sm:text-[34px]">Find your next <span class="text-white/45">favourite.</span></h2>
+        </div>
+        <div class="hidden items-center gap-2 text-[11px] text-white/45 sm:flex">
+          <span class="h-1.5 w-1.5 rounded-full bg-sand"></span> Thoughtfully picked. Easy to love.
+        </div>
+      </div>
+
+      <div id="category-filters" class="scrollbar-hide mb-7 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Filter products by category"></div>
+
+      <div id="product-grid" class="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-9 lg:grid-cols-4"></div>
+      <p id="empty-state" class="hidden rounded-2xl border border-white/10 bg-panel px-5 py-12 text-center text-sm text-white/55">No products match that search. Try another name.</p>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10">
+    <div class="mx-auto flex max-w-[1440px] flex-col gap-5 px-5 py-8 text-[11px] text-white/45 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <a href="#" class="text-sm font-extrabold tracking-[-.06em] text-white">electros<span class="text-sand">.</span></a>
+      <p>Good tech. Better everyday. &nbsp;·&nbsp; Made for India, with love.</p>
+      <a href="support.html" class="font-bold text-sand/75 transition hover:text-sand">Support</a>
+      <p>© 2025 Electros. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div id="quick-view-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/70 p-4 backdrop-blur-sm" aria-hidden="true">
+    <button class="quick-view-backdrop absolute inset-0 h-full w-full cursor-default" type="button" aria-label="Close quick view"></button>
+    <section class="relative z-10 grid max-h-[92vh] w-full max-w-[780px] overflow-y-auto rounded-[24px] border border-sand/15 bg-ink shadow-2xl sm:grid-cols-2" role="dialog" aria-modal="true" aria-labelledby="quick-view-name">
+      <div class="relative min-h-[250px] bg-panel sm:min-h-[420px]">
+        <img id="quick-view-image" class="absolute inset-0 h-full w-full object-cover" alt="" onerror="if(this.dataset.fallback && this.src!==this.dataset.fallback){this.src=this.dataset.fallback}else{this.onerror=null;this.src=PRODUCT_IMAGE_FALLBACK}">
+        <span id="quick-view-badge" class="absolute left-4 top-4 rounded-full border border-white/10 bg-ink/80 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[.12em] text-sand"></span>
+      </div>
+      <div class="flex flex-col p-6 sm:p-8">
+        <button id="quick-view-close" class="focus-ring absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-panel text-sand/70 transition hover:text-sand" type="button" aria-label="Close quick view">
+          <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </button>
+        <div class="mb-2 mt-7 flex items-center justify-between gap-3">
+          <p id="quick-view-category" class="text-[10px] font-bold uppercase tracking-[.16em] text-muted"></p>
+          <button id="quick-view-wishlist" class="wishlist-toggle grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white/10 bg-panel text-sand/75 transition hover:text-[#FACC15]" type="button" data-product-id="" data-product-name="" aria-pressed="false" aria-label="Save product to Volts">
+            <svg viewBox="0 0 24 24" class="volt-icon h-[18px] w-[18px]" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.7 13h5.1l-.5 8.2L18.3 11h-5.2l.1-8.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <h2 id="quick-view-name" class="text-[27px] font-extrabold leading-tight tracking-[-.05em]"></h2>
+        <p id="quick-view-description" class="mt-3 text-[12px] leading-5 text-white/55"></p>
+        <p id="quick-view-stock" class="mt-4 text-[10px] font-bold"></p>
+        <div class="mt-4">
+          <p class="mb-3 text-[9px] font-bold uppercase tracking-[.14em] text-white/45">Choose a colour</p>
+          <div id="quick-view-colors" class="flex flex-wrap gap-3"></div>
+          <p id="quick-view-selected-color" class="mt-2 text-[10px] text-white/45"></p>
+        </div>
+        <p class="mt-4 flex items-center gap-1.5 text-[10px] font-bold text-sand/70">
+          <svg viewBox="0 0 16 16" class="h-3 w-3 text-sand" fill="currentColor" aria-hidden="true"><path d="m8 1.3 1.8 4 4.4.5-3.3 3 .9 4.4L8 11l-3.8 2.2.9-4.4-3.3-3 4.4-.5L8 1.3Z"/></svg>
+          <span id="quick-view-rating"></span><span id="quick-view-reviews" class="font-medium text-white/35"></span>
+        </p>
+        <section class="mt-5 border-t border-white/10 pt-4" aria-labelledby="quick-view-reviews-heading">
+          <div class="flex items-center justify-between gap-2">
+            <h3 id="quick-view-reviews-heading" class="text-[11px] font-extrabold">Customer reviews</h3>
+            <span id="quick-view-review-summary" class="text-[9px] text-white/40"></span>
+          </div>
+          <div id="quick-view-review-list" class="mt-3 max-h-36 space-y-3 overflow-y-auto"></div>
+          <div id="quick-view-review-lock" class="mt-4 flex gap-2.5 rounded-xl border border-white/10 bg-white/[.035] p-3">
+            <svg class="mt-0.5 h-4 w-4 shrink-0 text-sand/55" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4.5" y="8.5" width="11" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 8.5V6a3 3 0 0 1 6 0v2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <div>
+              <p class="text-[9px] font-extrabold text-white/65">Verified Buyers Only</p>
+              <p class="mt-1 text-[9px] leading-4 text-white/40">Purchase this product to leave a review.</p>
+            </div>
+          </div>
+          <form id="quick-view-review-form" class="mt-4 hidden rounded-xl border border-sand/15 bg-panel/40 p-3">
+            <p class="mb-2 text-[9px] font-extrabold text-sand">Write a Review</p>
+            <fieldset>
+              <legend class="mb-1 text-[9px] font-semibold text-white/45">Your rating</legend>
+              <div class="flex gap-1" role="radiogroup" aria-label="Star rating">
+                <label class="cursor-pointer"><input class="peer sr-only" type="radio" name="review-rating" value="1" aria-label="1 star" required><span class="text-xl text-white/25 transition peer-checked:text-[#FACC15] hover:text-[#FACC15]">★</span></label>
+                <label class="cursor-pointer"><input class="peer sr-only" type="radio" name="review-rating" value="2" aria-label="2 stars" required><span class="text-xl text-white/25 transition peer-checked:text-[#FACC15] hover:text-[#FACC15]">★</span></label>
+                <label class="cursor-pointer"><input class="peer sr-only" type="radio" name="review-rating" value="3" aria-label="3 stars" required><span class="text-xl text-white/25 transition peer-checked:text-[#FACC15] hover:text-[#FACC15]">★</span></label>
+                <label class="cursor-pointer"><input class="peer sr-only" type="radio" name="review-rating" value="4" aria-label="4 stars" required><span class="text-xl text-white/25 transition peer-checked:text-[#FACC15] hover:text-[#FACC15]">★</span></label>
+                <label class="cursor-pointer"><input class="peer sr-only" type="radio" name="review-rating" value="5" aria-label="5 stars" required checked><span class="text-xl text-white/25 transition peer-checked:text-[#FACC15] hover:text-[#FACC15]">★</span></label>
+              </div>
+            </fieldset>
+            <label class="mt-2 block">
+              <span class="sr-only">Review comment</span>
+              <textarea id="quick-view-review-comment" class="focus-ring min-h-16 w-full resize-y rounded-lg border border-white/10 bg-ink/70 p-2.5 text-[10px] text-white placeholder:text-white/30" maxlength="500" placeholder="Share your experience (up to 500 characters)" required></textarea>
+            </label>
+            <button class="mt-2 rounded-lg bg-sand px-3 py-2 text-[9px] font-extrabold text-ink transition hover:bg-[#e8dcc5]" type="submit">Submit review</button>
+          </form>
+        </section>
+        <div class="mt-auto pt-8">
+          <p id="quick-view-price" class="mb-4 text-[24px] font-extrabold"></p>
+          <button id="quick-view-add" class="focus-ring flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-sand text-[12px] font-extrabold text-ink transition hover:bg-[#e8dcc5] disabled:cursor-not-allowed disabled:opacity-40" type="button">
+            Add to bag
+            <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+          <p class="mt-3 text-center text-[10px] text-white/40">Free delivery on orders over ₹999</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="cart-overlay" class="pointer-events-none invisible fixed inset-0 z-[70] opacity-0 transition-all" aria-hidden="true">
+    <button id="cart-backdrop" class="absolute inset-0 h-full w-full bg-black/65 backdrop-blur-[2px]" type="button" aria-label="Close shopping cart"></button>
+    <aside id="cart-drawer" class="drawer-surface absolute right-0 top-0 flex h-full w-full max-w-[460px] translate-x-full flex-col border-l border-sand/15 bg-ink shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="cart-heading">
+      <div class="flex items-center justify-between border-b border-white/10 px-5 py-5 sm:px-7">
+        <div>
+          <h2 id="cart-heading" class="text-[20px] font-extrabold tracking-[-.04em]">Your bag <span id="drawer-cart-count" class="ml-1 text-[13px] font-semibold text-muted"></span></h2>
+          <p class="mt-1 text-[10px] text-white/40">Good choices, ready when you are.</p>
+        </div>
+        <button id="cart-close" class="focus-ring grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sand/70 transition hover:text-sand" type="button" aria-label="Close shopping cart">
+          <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div id="cart-items" class="flex-1 overflow-y-auto px-5 sm:px-7"></div>
+      <div id="cart-empty" class="hidden flex-1 flex-col items-center justify-center px-8 text-center">
+        <div class="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-panel text-sand/60">
+          <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" aria-hidden="true"><path d="M4.5 8h15l-1.1 11h-13L4.5 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 8V6.2a3 3 0 0 1 6 0V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <p class="text-[15px] font-extrabold">Your bag is taking a breather.</p>
+        <p class="mt-2 text-[11px] leading-5 text-white/45">Add something you love and it’ll be waiting here.</p>
+        <button id="empty-cart-shop" class="mt-5 rounded-xl bg-sand px-4 py-2.5 text-[11px] font-extrabold text-ink transition hover:bg-[#e8dcc5]" type="button">Explore products</button>
+      </div>
+      <div id="cart-summary" class="border-t border-white/10 bg-panel/45 px-5 pb-5 pt-4 sm:px-7 sm:pb-7">
+        <div class="space-y-2 text-[11px]">
+          <div class="flex justify-between text-white/55"><span>Subtotal</span><span id="cart-subtotal" class="font-bold text-sand"></span></div>
+          <div class="flex justify-between text-white/55"><span>GST (18%)</span><span id="cart-gst" class="font-bold text-sand"></span></div>
+          <div class="flex justify-between border-t border-white/10 pt-3 text-[14px] font-extrabold text-sand"><span>Total</span><span id="cart-total"></span></div>
+        </div>
+        <button id="checkout-button" class="focus-ring mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-sand text-[12px] font-extrabold text-ink transition hover:bg-[#e8dcc5] disabled:cursor-not-allowed disabled:opacity-40" type="button">
+          Proceed to Checkout
+          <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M3.5 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="mt-3 text-center text-[9px] text-white/35">Taxes included in total. Secure demo checkout.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div id="signin-required-modal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/75 p-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="signin-required-title" aria-hidden="true">
+    <button class="absolute inset-0 h-full w-full cursor-default" type="button" aria-label="Close sign-in dialog" data-signin-close></button>
+    <section class="relative z-10 w-full max-w-[420px] rounded-[24px] border border-sand/20 bg-ink p-6 shadow-2xl sm:p-8">
+      <button class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sand/60 transition hover:text-sand" type="button" aria-label="Close sign-in dialog" data-signin-close>
+        <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </button>
+      <span class="grid h-11 w-11 place-items-center rounded-2xl bg-sand/10 text-sand">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true"><path d="M12 3v10m0 0 4-4m-4 4-4-4M5 15v4h14v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <p class="mt-5 text-[9px] font-extrabold uppercase tracking-[.18em] text-muted">One quick step</p>
+      <h2 id="signin-required-title" class="mt-2 text-[22px] font-extrabold leading-tight tracking-[-.04em]">Sign In Required to Complete Payment</h2>
+      <p class="mt-3 text-[11px] leading-5 text-white/55">Your bag is saved in this browser. Sign in to continue securely — your selected items and add-ons will still be here.</p>
+      <a href="login.html" class="mt-6 flex h-12 items-center justify-center rounded-xl bg-sand px-4 text-[11px] font-extrabold text-ink transition hover:bg-[#e8dcc5]">Sign in to continue</a>
+      <button class="mt-3 w-full rounded-xl border border-white/10 py-3 text-[10px] font-bold text-white/55 transition hover:border-white/25 hover:text-white" type="button" data-signin-close>Not now</button>
+    </section>
+  </div>
+
+  <div id="compare-bar" class="fixed bottom-4 left-1/2 z-50 hidden w-[calc(100%-2rem)] max-w-[560px] -translate-x-1/2 items-center justify-between gap-4 rounded-2xl border border-sand/20 bg-panel/95 px-4 py-3 shadow-2xl backdrop-blur-xl sm:px-5">
+    <p class="text-[11px] font-semibold text-white/70"><span id="compare-count" class="font-extrabold text-sand">0</span> devices selected <span class="hidden sm:inline">· Compare up to 3</span></p>
+    <div class="flex shrink-0 items-center gap-3">
+      <button id="compare-clear" class="text-[10px] font-bold text-white/45 transition hover:text-white" type="button">Clear</button>
+      <button id="compare-now" class="rounded-xl bg-sand px-4 py-2.5 text-[10px] font-extrabold text-ink transition hover:bg-[#e8dcc5]" type="button">Compare Now</button>
+    </div>
+  </div>
+
+  <div id="compare-modal" class="fixed inset-0 z-[65] hidden items-center justify-center bg-black/75 p-3 backdrop-blur-sm sm:p-6" aria-hidden="true">
+    <button class="compare-backdrop absolute inset-0 h-full w-full cursor-default" type="button" aria-label="Close comparison"></button>
+    <section class="relative z-10 flex max-h-[90vh] w-full max-w-[1100px] flex-col overflow-hidden rounded-[24px] border border-sand/15 bg-ink shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="compare-heading">
+      <div class="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-7">
+        <div>
+          <p class="text-[9px] font-extrabold uppercase tracking-[.17em] text-sand">Side by side</p>
+          <h2 id="compare-heading" class="mt-1 text-[19px] font-extrabold tracking-[-.04em]">Compare devices</h2>
+        </div>
+        <button id="compare-close" class="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sand/70 transition hover:text-sand" type="button" aria-label="Close comparison">×</button>
+      </div>
+      <div id="compare-table" class="overflow-auto p-4 sm:p-6"></div>
+    </section>
+  </div>
+
+  <div id="toast" class="pointer-events-none fixed bottom-5 left-1/2 z-[80] -translate-x-1/2 translate-y-3 rounded-xl border border-white/10 bg-panel px-5 py-3 text-[12px] font-semibold text-white opacity-0 shadow-2xl transition-all" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script>
+    const grid = document.getElementById("product-grid");
+    const emptyState = document.getElementById("empty-state");
+    const categoryFilters = document.getElementById("category-filters");
+    const quickViewModal = document.getElementById("quick-view-modal");
+    const cartOverlay = document.getElementById("cart-overlay");
+    const cartDrawer = document.getElementById("cart-drawer");
+    let filterButtons = [];
+    const searchInputs = [document.getElementById("search-input"), document.getElementById("search-input-mobile")];
+    let activeCategory = "All";
+    let cartItems = [];
+    let wishlistIds = [];
+    let productReviews = [];
+    let selectedColors = {};
+    let comparedProductIds = [];
+    let sessionUser = null;
+    let quickViewProduct = null;
+    let returnFocusElement = null;
+    let compareReturnFocusElement = null;
+    let toastTimer;
+    const compareModal = document.getElementById("compare-modal");
+
+    const formatPrice = (price) => new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0
+    }).format(price);
+
+    function renderFilters() {
+      const categories = [...new Set(products.map((product) => product.category))];
+      const options = ["All", ...categories];
+      categoryFilters.innerHTML = options.map((category) => {
+        const selected = activeCategory === category;
+        const count = category === "All"
+          ? products.length
+          : products.filter((product) => product.category === category).length;
+        const label = category === "All" ? "All products" : category;
+        return `<button class="filter-button rounded-full border border-white/15 px-4 py-2 text-[11px] font-bold transition ${selected ? "filter-active" : "text-white/65 hover:border-white/40 hover:text-white"}" data-category="${category}" type="button" aria-pressed="${selected}">${label}<span class="ml-1 opacity-65">${String(count).padStart(2, "0")}</span></button>`;
+      }).join("");
+
+      filterButtons = Array.from(categoryFilters.querySelectorAll(".filter-button"));
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          activeCategory = button.dataset.category;
+          filterButtons.forEach((item) => {
+            const selected = item === button;
+            item.classList.toggle("filter-active", selected);
+            item.classList.toggle("text-white/65", !selected);
+            item.setAttribute("aria-pressed", String(selected));
+          });
+          renderProducts();
+        });
+      });
+    }
+
+    function renderColorSwatches(product) {
+      const selectedColor = selectedColors[product.id] || product.colors[0].name;
+      return product.colors.map((color) => `
+        <button class="color-swatch h-[18px] w-[18px] rounded-full border border-white/30 transition ${selectedColor === color.name ? "swatch-selected" : ""}"
+          type="button" style="background-color:${color.hex}" data-product-id="${product.id}" data-color="${color.name}"
+          aria-label="${color.name}" title="${color.name}" aria-pressed="${selectedColor === color.name}"></button>`).join("");
+    }
+
+    function imageForColor(product, colorName) {
+      return product.images[colorName] || product.image;
+    }
+
+    function setProductImage(imageElement, product, colorName) {
+      imageElement.dataset.fallback = product.image;
+      imageElement.src = imageForColor(product, colorName);
+      imageElement.alt = product.name;
+    }
+
+    function stockBadge(product) {
+      if (product.stockCount === 0) return '<span class="stock-out rounded-full px-2.5 py-1 text-[8px] font-extrabold uppercase tracking-[.08em]">Out of Stock</span>';
+      if (product.stockCount <= 3) return `<span class="stock-low rounded-full px-2.5 py-1 text-[8px] font-extrabold uppercase tracking-[.08em]">Only ${product.stockCount} left!</span>`;
+      return '<span class="stock-in rounded-full px-2.5 py-1 text-[8px] font-extrabold uppercase tracking-[.08em]">In Stock</span>';
+    }
+
+    function renderProducts() {
+      const query = searchInputs.find((input) => input.value)?.value.trim().toLowerCase() || "";
+      const visibleProducts = products.filter((product) => {
+        const categoryMatches = activeCategory === "All" || product.category === activeCategory;
+        const queryMatches = `${product.name} ${product.category} ${product.description}`.toLowerCase().includes(query);
+        return categoryMatches && queryMatches;
+      });
+
+      grid.innerHTML = visibleProducts.map((product) => `
+        <article class="product-card group min-w-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sand" data-product="${product.name}" tabindex="0" aria-label="Open quick view for ${product.name}">
+          <div class="relative mb-3 aspect-[.93] overflow-hidden rounded-2xl bg-panel sm:mb-4 sm:rounded-[20px]">
+            <img class="product-image h-full w-full object-cover" src="${imageForColor(product, selectedColors[product.id] || product.colors[0].name)}" data-fallback="${product.image}" alt="${product.name}" loading="lazy" onerror="if(this.dataset.fallback && this.src!==this.dataset.fallback){this.src=this.dataset.fallback}else{this.onerror=null;this.src=PRODUCT_IMAGE_FALLBACK}">
+            <span class="absolute left-2.5 top-2.5 rounded-full border border-white/10 bg-ink/75 px-2.5 py-1 text-[8px] font-extrabold uppercase tracking-[.12em] text-white/75 backdrop-blur sm:left-3.5 sm:top-3.5 sm:text-[9px]">${product.badge}</span>
+            <button type="button" class="wishlist-toggle absolute right-2.5 top-2.5 grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-ink/75 text-sand/80 backdrop-blur transition hover:text-[#FACC15] sm:right-3.5 sm:top-3.5 sm:h-9 sm:w-9 ${wishlistIds.includes(product.id) ? "wishlist-active" : ""}" data-product-id="${product.id}" data-product-name="${product.name}" aria-label="${wishlistIds.includes(product.id) ? "Volted" : "Save to Volts"} ${product.name}" title="${wishlistIds.includes(product.id) ? "Volted" : "Save to Volts"}" aria-pressed="${wishlistIds.includes(product.id)}">
+              <svg viewBox="0 0 24 24" class="volt-icon h-[17px] w-[17px] ${wishlistIds.includes(product.id) ? "volted-icon" : ""}" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.7 13h5.1l-.5 8.2L18.3 11h-5.2l.1-8.2Z" fill="${wishlistIds.includes(product.id) ? "#FACC15" : "none"}" stroke="${wishlistIds.includes(product.id) ? "#FACC15" : "currentColor"}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="absolute bottom-2.5 left-2.5 sm:bottom-3.5 sm:left-3.5">${stockBadge(product)}</div>
+            <button type="button" class="add-to-cart absolute bottom-2.5 right-2.5 grid h-9 w-9 place-items-center rounded-xl bg-sand text-ink shadow-lg transition hover:scale-105 hover:bg-[#e8dcc5] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:scale-100 sm:bottom-3.5 sm:right-3.5 sm:h-10 sm:w-10" data-product="${product.name}" aria-label="Add ${product.name} to cart" ${product.stockCount === 0 ? "disabled" : ""}>
+              <svg viewBox="0 0 20 20" class="h-[17px] w-[17px]" fill="none" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <p class="mb-1.5 text-[9px] font-bold uppercase tracking-[.14em] text-white/40">${product.category}</p>
+              <h3 class="truncate text-[12px] font-extrabold tracking-[-.025em] sm:text-[14px]">${product.name}</h3>
+              <p class="mt-1.5 truncate text-[10px] text-white/45 sm:text-[11px]">${product.description}</p>
+            </div>
+            <span class="mt-5 shrink-0 text-[11px] font-extrabold sm:text-[13px]">${formatPrice(product.price)}</span>
+          </div>
+          <div class="mt-3 flex items-center gap-1.5 text-[9px] font-bold text-white/55">
+            <svg viewBox="0 0 16 16" class="h-3 w-3 text-sand" fill="currentColor" aria-hidden="true"><path d="m8 1.3 1.8 4 4.4.5-3.3 3 .9 4.4L8 11l-3.8 2.2.9-4.4-3.3-3 4.4-.5L8 1.3Z"/></svg>
+            ${product.rating} <span class="font-medium text-white/30">(${product.reviews.toLocaleString("en-IN")} reviews)</span>
+          </div>
+          <div class="mt-3 flex min-h-6 items-center justify-between gap-2">
+            <div class="flex items-center gap-2" role="group" aria-label="Available colours for ${product.name}">${renderColorSwatches(product)}</div>
+            <label class="flex cursor-pointer items-center gap-1.5 text-[9px] font-bold text-white/50 hover:text-sand" aria-label="Compare ${product.name}">
+              <input class="compare-toggle accent-[#DFD0B8]" type="checkbox" data-product-id="${product.id}" ${comparedProductIds.includes(product.id) ? "checked" : ""}>
+              Compare
+            </label>
+          </div>
+        </article>`).join("");
+
+      emptyState.classList.toggle("hidden", visibleProducts.length !== 0);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.remove("opacity-0", "translate-y-3");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add("opacity-0", "translate-y-3"), 2200);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function loadProductReviews() {
+      let serializedReviews;
+      try {
+        serializedReviews = localStorage.getItem("productReviews");
+      } catch (error) {
+        console.error("Unable to read saved product reviews.", error);
+        showToast("Saved product reviews could not be read.");
+        return [];
+      }
+      if (!serializedReviews) return [];
+
+      try {
+        const savedReviews = JSON.parse(serializedReviews);
+        if (!Array.isArray(savedReviews)) throw new TypeError("Saved product reviews must be an array.");
+        const knownProductIds = new Set(products.map((product) => product.id));
+        const validReviews = savedReviews.filter((review) =>
+          review &&
+          knownProductIds.has(review.productId) &&
+          Number.isInteger(review.rating) &&
+          review.rating >= 1 &&
+          review.rating <= 5 &&
+          typeof review.comment === "string" &&
+          review.comment.trim().length > 0 &&
+          review.comment.length <= 500 &&
+          typeof review.userName === "string" &&
+          review.userName.trim().length > 0 &&
+          typeof review.reviewerId === "string" &&
+          review.reviewerId.trim().length > 0 &&
+          typeof review.createdAt === "string" &&
+          review.verifiedPurchase === true
+        );
+        if (validReviews.length !== savedReviews.length) showToast("Some invalid saved reviews were skipped.");
+        return validReviews;
+      } catch (error) {
+        console.error("Unable to parse saved product reviews.", error);
+        showToast("Saved product review data is invalid.");
+        return [];
+      }
+    }
+
+    function saveProductReviews(reviews) {
+      try {
+        localStorage.setItem("productReviews", JSON.stringify(reviews));
+        return true;
+      } catch (error) {
+        console.error("Unable to save product reviews.", error);
+        showToast("Your review could not be saved in this browser.");
+        return false;
+      }
+    }
+
+    function getCurrentReviewerId() {
+      if (!sessionUser || sessionUser.guest || typeof sessionUser.phone !== "string") return "";
+      return sessionUser.phone.replace(/\D/g, "");
+    }
+
+    function hasVerifiedPurchase(product) {
+      const reviewerId = getCurrentReviewerId();
+      if (!reviewerId || typeof sessionUser.name !== "string" || !sessionUser.name.trim()) return false;
+
+      let serializedOrders;
+      try {
+        serializedOrders = localStorage.getItem("orders");
+      } catch (error) {
+        console.error("Unable to read the order history for review verification.", error);
+        showToast("Your order history could not be checked.");
+        return false;
+      }
+      if (!serializedOrders) return false;
+
+      try {
+        const orders = JSON.parse(serializedOrders);
+        if (!Array.isArray(orders)) throw new TypeError("Saved orders must be an array.");
+        const completedStatuses = new Set(["order placed", "packed", "shipped", "out for delivery", "delivered", "completed"]);
+        return orders.some((order) => {
+          if (!order || typeof order !== "object" || !Array.isArray(order.items)) return false;
+          const status = typeof order.status === "string" ? order.status.trim().toLowerCase() : "";
+          const phone = typeof order.customerPhone === "string"
+            ? order.customerPhone
+            : order.shippingAddress && typeof order.shippingAddress.phone === "string"
+              ? order.shippingAddress.phone
+              : typeof order.phone === "string"
+                ? order.phone
+                : "";
+          const orderReviewerId = phone.replace(/\D/g, "");
+          return completedStatuses.has(status) &&
+            orderReviewerId === reviewerId &&
+            order.items.some((item) => item && item.productId === product.id);
+        });
+      } catch (error) {
+        console.error("Unable to parse the order history for review verification.", error);
+        showToast("Your order history could not be checked.");
+        return false;
+      }
+    }
+
+    function renderQuickViewReviews(product) {
+      const productReviewsList = productReviews.filter((review) => review.productId === product.id);
+      const totalRatings = product.reviews + productReviewsList.length;
+      const ratingTotal = product.rating * product.reviews +
+        productReviewsList.reduce((sum, review) => sum + review.rating, 0);
+      document.getElementById("quick-view-rating").textContent = (ratingTotal / totalRatings).toFixed(1);
+      document.getElementById("quick-view-reviews").textContent = `(${totalRatings.toLocaleString("en-IN")} reviews)`;
+      document.getElementById("quick-view-review-summary").textContent = productReviewsList.length
+        ? `${productReviewsList.length} verified ${productReviewsList.length === 1 ? "review" : "reviews"}`
+        : "Rated by customers";
+
+      const reviewList = document.getElementById("quick-view-review-list");
+      reviewList.innerHTML = productReviewsList.length
+        ? [...productReviewsList].reverse().map((review) => {
+          const reviewDate = new Date(review.createdAt);
+          const dateLabel = Number.isNaN(reviewDate.getTime())
+            ? ""
+            : new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(reviewDate);
+          const stars = Array.from({ length: 5 }, (_, index) =>
+            `<span class="${index < review.rating ? "text-[#FACC15]" : "text-white/20"}">★</span>`
+          ).join("");
+          return `<article class="rounded-lg border border-white/[.07] bg-ink/35 p-2.5">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <p class="text-[9px] font-bold text-white/75">${escapeHtml(review.userName)}</p>
+                <p class="mt-1 text-[11px] leading-none" aria-label="${review.rating} out of 5 stars">${stars}</p>
+              </div>
+              <span class="shrink-0 rounded-full border border-emerald-300/20 bg-emerald-300/[.07] px-2 py-1 text-[8px] font-bold text-emerald-200">Verified Purchase</span>
+            </div>
+            <p class="mt-2 whitespace-pre-wrap break-words text-[10px] leading-4 text-white/60">${escapeHtml(review.comment)}</p>
+            ${dateLabel ? `<p class="mt-2 text-[8px] text-white/30">${escapeHtml(dateLabel)}</p>` : ""}
+          </article>`;
+        }).join("")
+        : '<p class="rounded-lg border border-white/[.07] px-3 py-3 text-[9px] text-white/40">No written reviews yet. Verified buyers can be the first.</p>';
+
+      const canReview = hasVerifiedPurchase(product);
+      document.getElementById("quick-view-review-lock").classList.toggle("hidden", canReview);
+      document.getElementById("quick-view-review-form").classList.toggle("hidden", !canReview);
+    }
+
+    function submitProductReview(event) {
+      event.preventDefault();
+      if (!quickViewProduct) return;
+
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+      const rating = Number(formData.get("review-rating"));
+      const comment = document.getElementById("quick-view-review-comment").value.trim();
+      const reviewerId = getCurrentReviewerId();
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5 || !comment || comment.length > 500) {
+        showToast("Choose a star rating and enter a review before submitting.");
+        return;
+      }
+      if (!hasVerifiedPurchase(quickViewProduct) || !reviewerId) {
+        renderQuickViewReviews(quickViewProduct);
+        showToast("Only verified buyers can review this product.");
+        return;
+      }
+
+      const review = {
+        productId: quickViewProduct.id,
+        reviewerId,
+        userName: sessionUser.name.trim(),
+        rating,
+        comment,
+        createdAt: new Date().toISOString(),
+        verifiedPurchase: true
+      };
+      const updatedReviews = [...productReviews, review];
+      if (!saveProductReviews(updatedReviews)) return;
+      productReviews = updatedReviews;
+      form.reset();
+      renderQuickViewReviews(quickViewProduct);
+      showToast("Your verified review has been saved.");
+    }
+
+    function loadWishlist() {
+      let serializedWishlist;
+      try {
+        serializedWishlist = localStorage.getItem("wishlist");
+      } catch (error) {
+        console.error("Unable to read the saved wishlist.", error);
+        showToast("Your saved wishlist could not be read.");
+        return [];
+      }
+      if (!serializedWishlist) return [];
+
+      try {
+        const savedIds = JSON.parse(serializedWishlist);
+        if (!Array.isArray(savedIds)) throw new TypeError("Saved wishlist must be an array.");
+        const knownIds = new Set(products.map((product) => product.id));
+        const validIds = [...new Set(savedIds.filter((id) => typeof id === "string" && knownIds.has(id)))];
+        if (validIds.length !== savedIds.length) showToast("Some invalid wishlist items were skipped.");
+        return validIds;
+      } catch (error) {
+        console.error("Unable to parse the saved wishlist.", error);
+        showToast("Your saved wishlist data is invalid.");
+        return [];
+      }
+    }
+
+    function saveWishlist() {
+      try {
+        localStorage.setItem("wishlist", JSON.stringify(wishlistIds));
+        return true;
+      } catch (error) {
+        console.error("Unable to save the wishlist.", error);
+        showToast("Wishlist changes could not be saved in this browser.");
+        return false;
+      }
+    }
+
+    function syncWishlistUI() {
+      const count = wishlistIds.length;
+      document.getElementById("wishlist-count").textContent = count;
+      document.getElementById("wishlist-link").setAttribute(
+        "aria-label",
+        `Wishlist, ${count} ${count === 1 ? "item" : "items"}`
+      );
+      document.querySelectorAll(".wishlist-toggle").forEach((button) => {
+        const productName = button.dataset.productName;
+        if (!productName) return;
+        const active = wishlistIds.includes(button.dataset.productId);
+        button.classList.toggle("wishlist-active", active);
+        button.setAttribute("aria-pressed", String(active));
+        button.setAttribute("aria-label", `${active ? "Volted" : "Save to Volts"} ${productName}`);
+        button.setAttribute("title", active ? "Volted" : "Save to Volts");
+        const icon = button.querySelector(".volt-icon");
+        const path = icon.querySelector("path");
+        path.setAttribute("fill", active ? "#FACC15" : "none");
+        path.setAttribute("stroke", active ? "#FACC15" : "currentColor");
+        icon.classList.toggle("volted-icon", active);
+      });
+    }
+
+    function toggleWishlist(productId) {
+      const product = products.find((candidate) => candidate.id === productId);
+      if (!product) {
+        showToast("That product is no longer available.");
+        return;
+      }
+      const wasWishlisted = wishlistIds.includes(productId);
+      wishlistIds = wasWishlisted
+        ? wishlistIds.filter((id) => id !== productId)
+        : [...wishlistIds, productId];
+      if (!saveWishlist()) {
+        wishlistIds = wasWishlisted ? [...wishlistIds, productId] : wishlistIds.filter((id) => id !== productId);
+        return;
+      }
+      syncWishlistUI();
+      showToast(wasWishlisted ? `${product.name} removed from your Volts.` : `${product.name} Volted.`);
+    }
+
+    function loadCart() {
+      let serializedCart;
+      try {
+        serializedCart = localStorage.getItem("electrosCart");
+      } catch (error) {
+        console.error("Unable to read the saved cart.", error);
+        showToast("Your saved bag could not be read.");
+        return [];
+      }
+
+      if (!serializedCart) return [];
+
+      try {
+        const savedItems = JSON.parse(serializedCart);
+        if (!Array.isArray(savedItems)) throw new TypeError("Saved cart must be an array.");
+
+        const validItems = [];
+        let invalidEntryFound = false;
+        savedItems.forEach((item) => {
+          const product = item && products.find((candidate) => candidate.name === item.name);
+          if (!product || !Number.isSafeInteger(item.quantity) || item.quantity < 1) {
+            invalidEntryFound = true;
+            return;
+          }
+          const color = item.color === undefined ? product.colors[0].name : item.color;
+          const image = item.image === undefined ? imageForColor(product, color) : item.image;
+          const extendedWarranty = item.extendedWarranty === true;
+          const damageProtection = item.damageProtection === true;
+          const existingItem = validItems.find((entry) =>
+            entry.name === product.name &&
+            entry.color === color &&
+            entry.extendedWarranty === extendedWarranty &&
+            entry.damageProtection === damageProtection
+          );
+          const productQuantity = validItems
+            .filter((entry) => entry.name === product.name)
+            .reduce((sum, entry) => sum + entry.quantity, 0);
+          if (!product.colors.some((variant) => variant.name === color) ||
+              image !== imageForColor(product, color) ||
+              productQuantity + item.quantity > product.stockCount) {
+            invalidEntryFound = true;
+            return;
+          }
+          if (existingItem) existingItem.quantity += item.quantity;
+          else validItems.push({
+            name: product.name,
+            quantity: item.quantity,
+            color,
+            image,
+            extendedWarranty,
+            damageProtection
+          });
+        });
+        if (invalidEntryFound) showToast("Some invalid saved bag items were skipped.");
+        return validItems;
+      } catch (error) {
+        console.error("Unable to parse the saved cart.", error);
+        showToast("Your saved bag data is invalid and could not be loaded.");
+        return [];
+      }
+    }
+
+    function saveCart() {
+      try {
+        localStorage.setItem("electrosCart", JSON.stringify(cartItems));
+        return true;
+      } catch (error) {
+        console.error("Unable to save the cart.", error);
+        showToast("Cart changes could not be saved in this browser.");
+        return false;
+      }
+    }
+
+    function renderCart() {
+      const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById("cart-count").textContent = itemCount;
+      document.getElementById("cart-button").setAttribute(
+        "aria-label",
+        `Shopping cart, ${itemCount} ${itemCount === 1 ? "item" : "items"}`
+      );
+      document.getElementById("drawer-cart-count").textContent = `(${itemCount})`;
+
+      const hasItems = cartItems.length > 0;
+      const cartItemsContainer = document.getElementById("cart-items");
+      const emptyCart = document.getElementById("cart-empty");
+      const checkoutButton = document.getElementById("checkout-button");
+      cartItemsContainer.classList.toggle("hidden", !hasItems);
+      emptyCart.classList.toggle("hidden", hasItems);
+      checkoutButton.disabled = !hasItems;
+
+      let subtotalPaise = 0;
+      cartItemsContainer.innerHTML = cartItems.map((item, itemIndex) => {
+        const product = products.find((candidate) => candidate.name === item.name);
+        if (!product) return "";
+        const warrantyPaise = item.extendedWarranty ? 29900 : 0;
+        const protectionPaise = item.damageProtection ? 59900 : 0;
+        const lineTotalPaise = (product.price * 100 + warrantyPaise + protectionPaise) * item.quantity;
+        subtotalPaise += lineTotalPaise;
+        return `
+          <article class="flex gap-3 border-b border-white/10 py-4">
+            <img class="h-[82px] w-[82px] shrink-0 rounded-xl bg-panel object-cover" src="${item.image || product.image}" data-fallback="${product.image}" alt="${product.name}" loading="lazy" onerror="if(this.dataset.fallback && this.src!==this.dataset.fallback){this.src=this.dataset.fallback}else{this.onerror=null;this.src=PRODUCT_IMAGE_FALLBACK}">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <p class="truncate text-[12px] font-extrabold">${product.name}</p>
+                  <p class="mt-1 text-[9px] uppercase tracking-[.12em] text-muted">${product.category}</p>
+                  <p class="mt-1 text-[9px] text-white/45">Colour: ${item.color}</p>
+                </div>
+                <button class="shrink-0 text-[9px] font-semibold text-white/40 underline decoration-white/20 underline-offset-2 transition hover:text-sand" data-cart-action="remove" data-cart-index="${itemIndex}" type="button" aria-label="Remove ${product.name} (${item.color}) from bag">Remove</button>
+              </div>
+              <div class="mt-3 flex items-center justify-between">
+                <div class="flex h-7 items-center rounded-lg border border-white/15">
+                  <button class="grid h-7 w-7 place-items-center text-[14px] text-sand/65 transition hover:text-sand" data-cart-action="decrease" data-cart-index="${itemIndex}" type="button" aria-label="Decrease ${product.name} quantity">−</button>
+                  <span class="min-w-6 text-center text-[10px] font-bold">${item.quantity}</span>
+                  <button class="grid h-7 w-7 place-items-center text-[14px] text-sand/65 transition hover:text-sand disabled:opacity-30" data-cart-action="increase" data-cart-index="${itemIndex}" type="button" aria-label="Increase ${product.name} quantity" ${cartItems.filter((entry) => entry.name === product.name).reduce((sum, entry) => sum + entry.quantity, 0) >= product.stockCount ? "disabled" : ""}>+</button>
+                </div>
+                <span class="text-[11px] font-extrabold">${formatMoney(lineTotalPaise)}</span>
+              </div>
+              <div class="mt-3 space-y-2 rounded-xl border border-white/[.07] bg-white/[.025] p-3">
+                <label class="flex cursor-pointer items-start gap-2.5 text-[9px] leading-4 text-white/65">
+                  <input class="mt-0.5 accent-[#DFD0B8]" type="checkbox" data-cart-addon="extendedWarranty" data-cart-index="${itemIndex}" ${item.extendedWarranty ? "checked" : ""}>
+                  <span class="flex-1">+1 Year Extended Brand Warranty <span class="text-sand/45">(₹299 / item)</span></span>
+                </label>
+                <label class="flex cursor-pointer items-start gap-2.5 text-[9px] leading-4 text-white/65">
+                  <input class="mt-0.5 accent-[#DFD0B8]" type="checkbox" data-cart-addon="damageProtection" data-cart-index="${itemIndex}" ${item.damageProtection ? "checked" : ""}>
+                  <span class="flex-1">+2 Year Accidental Damage Protection <span class="text-sand/45">(₹599 / item)</span></span>
+                </label>
+              </div>
+            </div>
+          </article>`;
+      }).join("");
+
+      const gstPaise = Math.round(subtotalPaise * 0.18);
+      document.getElementById("cart-subtotal").textContent = formatMoney(subtotalPaise);
+      document.getElementById("cart-gst").textContent = formatMoney(gstPaise);
+      document.getElementById("cart-total").textContent = formatMoney(subtotalPaise + gstPaise);
+    }
+
+    function formatMoney(amountInPaise) {
+      return new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amountInPaise / 100);
+    }
+
+    function addToCart(productName, colorName) {
+      const product = products.find((candidate) => candidate.name === productName);
+      if (!product) {
+        showToast("That product is no longer available.");
+        return;
+      }
+      if (product.stockCount === 0) {
+        showToast(`${product.name} is out of stock.`);
+        return;
+      }
+      const color = colorName || selectedColors[product.id] || product.colors[0].name;
+      if (!product.colors.some((variant) => variant.name === color)) {
+        showToast("That colour option is no longer available.");
+        return;
+      }
+      const productQuantity = cartItems
+        .filter((item) => item.name === productName)
+        .reduce((sum, item) => sum + item.quantity, 0);
+      if (productQuantity >= product.stockCount) {
+        showToast(`Only ${product.stockCount} ${product.name} in stock.`);
+        return;
+      }
+      const existingItem = cartItems.find((item) =>
+        item.name === productName &&
+        item.color === color &&
+        !item.extendedWarranty &&
+        !item.damageProtection
+      );
+      const image = imageForColor(product, color);
+      if (existingItem) existingItem.quantity += 1;
+      if (existingItem) existingItem.image = image;
+      else cartItems.push({
+        name: productName,
+        quantity: 1,
+        color,
+        image,
+        extendedWarranty: false,
+        damageProtection: false
+      });
+      const saved = saveCart();
+      renderCart();
+      if (saved) showToast(`${product.name} (${color}) added to your bag.`);
+    }
+
+    function openQuickView(productName, trigger) {
+      const product = products.find((item) => item.name === productName);
+      if (!product) return;
+      quickViewProduct = product;
+      returnFocusElement = trigger;
+      setProductImage(
+        document.getElementById("quick-view-image"),
+        product,
+        selectedColors[product.id] || product.colors[0].name
+      );
+      document.getElementById("quick-view-badge").textContent = product.badge;
+      document.getElementById("quick-view-category").textContent = product.category;
+      document.getElementById("quick-view-name").textContent = product.name;
+      document.getElementById("quick-view-description").textContent = product.description;
+      document.getElementById("quick-view-review-form").reset();
+      renderQuickViewReviews(product);
+      document.getElementById("quick-view-price").textContent = formatPrice(product.price);
+      const stock = document.getElementById("quick-view-stock");
+      stock.className = `mt-4 text-[10px] font-bold ${product.stockCount === 0 ? "text-white/45" : product.stockCount <= 3 ? "text-amber-300" : "text-emerald-300"}`;
+      stock.textContent = product.stockCount === 0
+        ? "Out of Stock"
+        : product.stockCount <= 3
+          ? `Only ${product.stockCount} left!`
+          : "In Stock";
+      document.getElementById("quick-view-colors").innerHTML = renderColorSwatches(product);
+      document.getElementById("quick-view-selected-color").textContent = `Selected: ${selectedColors[product.id] || product.colors[0].name}`;
+      document.getElementById("quick-view-add").disabled = product.stockCount === 0;
+      const wishlistButton = document.getElementById("quick-view-wishlist");
+      wishlistButton.dataset.productId = product.id;
+      wishlistButton.dataset.productName = product.name;
+      quickViewModal.classList.remove("hidden");
+      quickViewModal.classList.add("flex");
+      quickViewModal.setAttribute("aria-hidden", "false");
+      syncWishlistUI();
+      document.body.classList.add("overflow-hidden");
+      document.getElementById("quick-view-close").focus();
+    }
+
+    function closeQuickView() {
+      quickViewModal.classList.add("hidden");
+      quickViewModal.classList.remove("flex");
+      quickViewModal.setAttribute("aria-hidden", "true");
+      quickViewProduct = null;
+      document.body.classList.remove("overflow-hidden");
+      if (returnFocusElement) returnFocusElement.focus();
+    }
+
+    function renderCompareBar() {
+      const compareBar = document.getElementById("compare-bar");
+      const hasSelections = comparedProductIds.length > 0;
+      compareBar.classList.toggle("hidden", !hasSelections);
+      compareBar.classList.toggle("flex", hasSelections);
+      document.getElementById("compare-count").textContent = comparedProductIds.length;
+    }
+
+    function renderCompareTable() {
+      const comparedProducts = comparedProductIds
+        .map((id) => products.find((product) => product.id === id))
+        .filter(Boolean);
+      const specNames = [...new Set(comparedProducts.flatMap((product) => Object.keys(product.specs)))];
+      const headers = comparedProducts.map((product) =>
+        `<th scope="col" class="min-w-[170px] border-b border-white/10 px-4 py-3 text-left text-[12px] font-extrabold text-sand">${product.name}</th>`
+      ).join("");
+      const row = (label, values) => `
+        <tr class="border-b border-white/[.07] align-top">
+          <th scope="row" class="sticky left-0 z-[1] min-w-[115px] bg-ink px-3 py-4 text-left text-[9px] font-extrabold uppercase tracking-[.12em] text-white/45">${label}</th>
+          ${values.map((value) => `<td class="min-w-[170px] px-4 py-4 text-[11px] leading-5 text-white/75">${value}</td>`).join("")}
+        </tr>`;
+      const rows = [
+        row("Image", comparedProducts.map((product) => {
+          const color = selectedColors[product.id] || product.colors[0].name;
+          return `<img class="h-28 w-full rounded-xl bg-panel object-cover" src="${imageForColor(product, color)}" data-fallback="${product.image}" alt="${product.name} — ${color}" loading="lazy" onerror="if(this.dataset.fallback && this.src!==this.dataset.fallback){this.src=this.dataset.fallback}else{this.onerror=null;this.src=PRODUCT_IMAGE_FALLBACK}">`;
+        })),
+        row("Price", comparedProducts.map((product) => `<span class="text-[14px] font-extrabold text-sand">${formatPrice(product.price)}</span>`)),
+        row("Stock status", comparedProducts.map((product) => stockBadge(product))),
+        row("Selected colour", comparedProducts.map((product) => selectedColors[product.id] || product.colors[0].name)),
+        row("Available colours", comparedProducts.map((product) => `
+          <div class="flex flex-col gap-2">${product.colors.map((color) => `
+            <span class="flex items-center gap-2 ${color.name === (selectedColors[product.id] || product.colors[0].name) ? "font-extrabold text-sand" : ""}"><i class="h-3.5 w-3.5 rounded-full border border-white/30" style="background-color:${color.hex}"></i>${color.name}</span>`).join("")}</div>`)),
+        ...specNames.map((spec) => row(spec, comparedProducts.map((product) => product.specs[spec] || "—")))
+      ];
+      document.getElementById("compare-table").innerHTML = `
+        <table class="w-full border-collapse text-left" style="min-width:${150 + comparedProducts.length * 170}px">
+          <thead><tr><th class="sticky left-0 z-[1] min-w-[115px] border-b border-white/10 bg-ink p-3"></th>${headers}</tr></thead>
+          <tbody>${rows.join("")}</tbody>
+        </table>`;
+    }
+
+    function openCompare() {
+      if (comparedProductIds.length === 0) return;
+      compareReturnFocusElement = document.getElementById("compare-now");
+      renderCompareTable();
+      compareModal.classList.remove("hidden");
+      compareModal.classList.add("flex");
+      compareModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
+      document.getElementById("compare-close").focus();
+    }
+
+    function closeCompare() {
+      compareModal.classList.add("hidden");
+      compareModal.classList.remove("flex");
+      compareModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overflow-hidden");
+      if (compareReturnFocusElement) compareReturnFocusElement.focus();
+    }
+
+    function openCart() {
+      cartOverlay.classList.remove("invisible", "opacity-0", "pointer-events-none");
+      cartOverlay.setAttribute("aria-hidden", "false");
+      cartDrawer.classList.remove("translate-x-full");
+      document.body.classList.add("overflow-hidden");
+      document.getElementById("cart-close").focus();
+    }
+
+    function closeCart() {
+      cartOverlay.classList.add("invisible", "opacity-0", "pointer-events-none");
+      cartOverlay.setAttribute("aria-hidden", "true");
+      cartDrawer.classList.add("translate-x-full");
+      if (document.getElementById("signin-required-modal").classList.contains("hidden")) {
+        document.body.classList.remove("overflow-hidden");
+      }
+      document.getElementById("cart-button").focus();
+    }
+
+    function isSignedInUser(user) {
+      return Boolean(
+        user &&
+        user.guest !== true &&
+        typeof user.name === "string" &&
+        user.name.trim() &&
+        typeof user.phone === "string" &&
+        user.phone.replace(/\D/g, "").length >= 10
+      );
+    }
+
+    function openSignInRequired() {
+      const modal = document.getElementById("signin-required-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
+      modal.querySelector("a[href='login.html']").focus();
+    }
+
+    function closeSignInRequired() {
+      const modal = document.getElementById("signin-required-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      modal.setAttribute("aria-hidden", "true");
+      if (cartOverlay.classList.contains("invisible")) document.body.classList.remove("overflow-hidden");
+      document.getElementById("checkout-button").focus();
+    }
+
+    cartItems = loadCart();
+    renderCart();
+
+    const loginLink = document.getElementById("login-button");
+    const loginLabel = document.getElementById("login-label");
+    const logoutButton = document.getElementById("logout-button");
+
+    try {
+      sessionUser = JSON.parse(localStorage.getItem("electrosUser") || "null");
+    } catch (error) {
+      console.error("Unable to read the saved Electros session.", error);
+      showToast("Saved sign-in details could not be read. Please sign in again.");
+    }
+
+    productReviews = loadProductReviews();
+
+    if (sessionUser && typeof sessionUser.name === "string" && sessionUser.name.trim()) {
+      const name = sessionUser.name.trim();
+      loginLabel.textContent = `Hi, ${name}`;
+      loginLink.href = "profile.html";
+      loginLink.setAttribute("aria-label", `Signed in as ${name}`);
+      logoutButton.classList.remove("hidden");
+    }
+
+    searchInputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        searchInputs.forEach((otherInput) => {
+          if (otherInput !== input) otherInput.value = input.value;
+        });
+        renderProducts();
+      });
+    });
+
+    document.querySelectorAll("[data-nav-filter]").forEach((link) => {
+      link.addEventListener("click", () => {
+        const matchingButton = filterButtons.find((button) => button.dataset.category === link.dataset.navFilter);
+        if (matchingButton) matchingButton.click();
+      });
+    });
+
+    grid.addEventListener("click", (event) => {
+      const colorButton = event.target.closest(".color-swatch");
+      if (colorButton) {
+        event.preventDefault();
+        const product = products.find((candidate) => candidate.id === colorButton.dataset.productId);
+        if (!product) return;
+        selectedColors[product.id] = colorButton.dataset.color;
+        renderProducts();
+        syncWishlistUI();
+        return;
+      }
+      if (event.target.closest(".compare-toggle")) return;
+      const wishlistButton = event.target.closest(".wishlist-toggle");
+      if (wishlistButton) {
+        toggleWishlist(wishlistButton.dataset.productId);
+        return;
+      }
+      const addButton = event.target.closest(".add-to-cart");
+      if (addButton) {
+        addToCart(addButton.dataset.product);
+        return;
+      }
+      const card = event.target.closest(".product-card");
+      if (card) openQuickView(card.dataset.product, card);
+    });
+
+    grid.addEventListener("change", (event) => {
+      const checkbox = event.target.closest(".compare-toggle");
+      if (!checkbox) return;
+      const productId = checkbox.dataset.productId;
+      if (checkbox.checked && comparedProductIds.length >= 3) {
+        checkbox.checked = false;
+        showToast("You can compare up to 3 devices at a time.");
+        return;
+      }
+      comparedProductIds = checkbox.checked
+        ? [...comparedProductIds, productId]
+        : comparedProductIds.filter((id) => id !== productId);
+      renderCompareBar();
+    });
+
+    grid.addEventListener("keydown", (event) => {
+      if (event.target.classList.contains("product-card") && (event.key === "Enter" || event.key === " ")) {
+        event.preventDefault();
+        openQuickView(event.target.dataset.product, event.target);
+      }
+    });
+
+    document.getElementById("quick-view-close").addEventListener("click", closeQuickView);
+    document.querySelector(".quick-view-backdrop").addEventListener("click", closeQuickView);
+    document.getElementById("quick-view-review-form").addEventListener("submit", submitProductReview);
+    document.getElementById("quick-view-colors").addEventListener("click", (event) => {
+      const colorButton = event.target.closest(".color-swatch");
+      if (!colorButton || !quickViewProduct) return;
+      selectedColors[quickViewProduct.id] = colorButton.dataset.color;
+      setProductImage(document.getElementById("quick-view-image"), quickViewProduct, colorButton.dataset.color);
+      document.getElementById("quick-view-colors").innerHTML = renderColorSwatches(quickViewProduct);
+      document.getElementById("quick-view-selected-color").textContent = `Selected: ${selectedColors[quickViewProduct.id]}`;
+      renderProducts();
+      syncWishlistUI();
+    });
+    document.getElementById("quick-view-add").addEventListener("click", () => {
+      if (!quickViewProduct) return;
+      addToCart(quickViewProduct.name, selectedColors[quickViewProduct.id] || quickViewProduct.colors[0].name);
+      closeQuickView();
+    });
+    document.getElementById("quick-view-wishlist").addEventListener("click", (event) => {
+      toggleWishlist(event.currentTarget.dataset.productId);
+    });
+
+    document.getElementById("cart-button").addEventListener("click", openCart);
+    document.getElementById("cart-close").addEventListener("click", closeCart);
+    document.getElementById("cart-backdrop").addEventListener("click", closeCart);
+    document.getElementById("empty-cart-shop").addEventListener("click", () => {
+      closeCart();
+      document.getElementById("shop").scrollIntoView({ behavior: "smooth" });
+    });
+
+    document.getElementById("cart-items").addEventListener("change", (event) => {
+      const addonCheckbox = event.target.closest("[data-cart-addon]");
+      if (!addonCheckbox) return;
+      const itemIndex = Number(addonCheckbox.dataset.cartIndex);
+      const item = cartItems[itemIndex];
+      if (!item || !["extendedWarranty", "damageProtection"].includes(addonCheckbox.dataset.cartAddon)) return;
+      item[addonCheckbox.dataset.cartAddon] = addonCheckbox.checked;
+      saveCart();
+      renderCart();
+    });
+
+    document.getElementById("cart-items").addEventListener("click", (event) => {
+      const actionButton = event.target.closest("[data-cart-action]");
+      if (!actionButton) return;
+      const itemIndex = Number(actionButton.dataset.cartIndex);
+      if (!Number.isSafeInteger(itemIndex) || !cartItems[itemIndex]) return;
+
+      if (actionButton.dataset.cartAction === "remove") {
+        cartItems.splice(itemIndex, 1);
+      } else if (actionButton.dataset.cartAction === "increase") {
+        const product = products.find((candidate) => candidate.name === cartItems[itemIndex].name);
+        const productQuantity = cartItems
+          .filter((entry) => entry.name === cartItems[itemIndex].name)
+          .reduce((sum, entry) => sum + entry.quantity, 0);
+        if (!product || productQuantity >= product.stockCount) {
+          showToast(`Only ${product ? product.stockCount : 0} in stock.`);
+          return;
+        }
+        cartItems[itemIndex].quantity += 1;
+      } else if (actionButton.dataset.cartAction === "decrease") {
+        cartItems[itemIndex].quantity = Math.max(1, cartItems[itemIndex].quantity - 1);
+      }
+      saveCart();
+      renderCart();
+    });
+
+    document.getElementById("compare-now").addEventListener("click", openCompare);
+    document.getElementById("compare-clear").addEventListener("click", () => {
+      comparedProductIds = [];
+      renderCompareBar();
+      grid.querySelectorAll(".compare-toggle").forEach((checkbox) => { checkbox.checked = false; });
+    });
+    document.getElementById("compare-close").addEventListener("click", closeCompare);
+    document.querySelector(".compare-backdrop").addEventListener("click", closeCompare);
+
+    document.getElementById("checkout-button").addEventListener("click", () => {
+      if (cartItems.length === 0) return;
+      if (!isSignedInUser(sessionUser)) {
+        openSignInRequired();
+        return;
+      }
+      window.location.href = "checkout.html";
+    });
+    document.querySelectorAll("[data-signin-close]").forEach((button) => {
+      button.addEventListener("click", closeSignInRequired);
+    });
+
+    logoutButton.addEventListener("click", () => {
+      try {
+        localStorage.removeItem("electrosUser");
+      } catch (error) {
+        console.error("Unable to clear the Electros session.", error);
+        showToast("Could not log out. Please try again.");
+        return;
+      }
+      sessionUser = null;
+      loginLabel.textContent = "Sign in";
+      loginLink.href = "login.html";
+      loginLink.setAttribute("aria-label", "Sign in");
+      logoutButton.classList.add("hidden");
+      showToast("You have been logged out.");
+    });
+
+    const desktopSearch = document.getElementById("search-input");
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        if (!document.getElementById("signin-required-modal").classList.contains("hidden")) closeSignInRequired();
+        else if (!compareModal.classList.contains("hidden")) closeCompare();
+        else if (!quickViewModal.classList.contains("hidden")) closeQuickView();
+        else if (!cartOverlay.classList.contains("invisible")) closeCart();
+      }
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        desktopSearch.focus();
+      }
+    });
+
+    wishlistIds = loadWishlist();
+    renderFilters();
+    renderProducts();
+    renderCompareBar();
+    syncWishlistUI();
+  </script>
+</body>
+</html>

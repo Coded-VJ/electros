@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#222831">
+  <meta name="description" content="Track an Electros order, raise a support ticket, or find answers to common questions.">
+  <title>Support — Electros</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#222831",
+            panel: "#393E46",
+            muted: "#948979",
+            sand: "#DFD0B8"
+          },
+          fontFamily: { sans: ["Manrope", "sans-serif"] }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; min-height: 100vh; background: #222831; color: #DFD0B8; font-family: Manrope, sans-serif; }
+    button, input, select, textarea { font: inherit; }
+    .focus-ring:focus-visible { outline: 2px solid rgba(223,208,184,.85); outline-offset: 3px; }
+    .progress-item { position: relative; z-index: 0; }
+    .progress-item:not(:last-child)::after { position: absolute; z-index: 0; top: 15px; left: 50%; width: 100%; height: 2px; background: rgba(255,255,255,.12); content: ""; }
+    .progress-item.progress-complete:not(:last-child)::after { background: #DFD0B8; }
+    .progress-dot { position: relative; z-index: 1; }
+    .support-hero { background: radial-gradient(ellipse at 68% 28%, rgba(0,240,255,.09), transparent 38%), linear-gradient(120deg, #393E46, #303640 68%, #393E46); }
+    .support-glow { animation: support-pulse 8s ease-in-out infinite; }
+    .support-bolt { opacity: .14; filter: drop-shadow(0 0 8px rgba(0,240,255,.55)); animation: support-bolt-pulse 10s ease-in-out infinite; }
+    @keyframes support-pulse {
+      0%, 100% { opacity: .45; transform: scale(.96); }
+      50% { opacity: .8; transform: scale(1.04); }
+    }
+    @keyframes support-bolt-pulse {
+      0%, 35%, 100% { opacity: .08; }
+      45%, 52% { opacity: .2; }
+      48% { opacity: .12; }
+    }
+    .faq summary { list-style: none; cursor: pointer; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq[open] .faq-chevron { transform: rotate(180deg); }
+    @media (max-width: 639px) {
+      .progress-item { min-height: 48px; flex-direction: row; align-items: flex-start; gap: 12px; text-align: left; }
+      .progress-item:not(:last-child)::after { top: 30px; left: 14px; width: 2px; height: calc(100% - 12px); }
+      .progress-copy { margin-top: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="sticky top-0 z-30 border-b border-white/10 bg-ink/90 backdrop-blur-xl">
+    <div class="mx-auto flex h-[68px] max-w-[1200px] items-center justify-between gap-5 px-5 sm:px-8">
+      <a href="index.html" class="flex shrink-0 items-center gap-2.5" aria-label="Electros home">
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-sand text-ink">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.7 13h5.1l-.5 8.2L18.3 11h-5.2l.1-8.2Z" fill="currentColor"/></svg>
+        </span>
+        <span class="text-xl font-extrabold tracking-[-.07em]">electros<span class="text-sand">.</span></span>
+      </a>
+      <nav class="flex items-center gap-3 text-[10px] font-bold sm:gap-6 sm:text-[11px]" aria-label="Main navigation">
+        <a href="index.html#shop" class="text-white/55 transition hover:text-white">Shop</a>
+        <a href="profile.html" class="text-white/55 transition hover:text-white">My account</a>
+        <a href="support.html" aria-current="page" class="rounded-lg bg-sand px-3 py-2 text-ink">Support</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-[1200px] px-5 pb-16 pt-9 sm:px-8 sm:pt-12">
+    <section class="support-hero relative isolate mb-9 overflow-hidden rounded-[26px] border border-white/[.08] px-6 py-8 sm:px-10 sm:py-10">
+      <div class="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <div class="support-glow absolute -right-12 -top-20 h-64 w-64 rounded-full bg-[#00F0FF]/10 blur-3xl"></div>
+        <svg class="support-bolt absolute right-8 top-1/2 h-36 w-24 -translate-y-1/2 sm:right-16 sm:h-48 sm:w-32" viewBox="0 0 96 160" fill="none">
+          <path d="M56 8 20 86h26l-8 66 40-87H51l5-57Z" stroke="#00F0FF" stroke-width="2.5" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="relative z-10">
+        <p class="mb-3 text-[10px] font-extrabold uppercase tracking-[.2em] text-sand/70">Here when you need us</p>
+        <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div>
+            <h1 class="text-[34px] font-extrabold leading-tight tracking-[-.06em] sm:text-[46px]">A little help goes <span class="text-sand/65">a long way.</span></h1>
+            <p class="mt-3 max-w-[560px] text-[12px] leading-6 text-white/55">Track an order, tell us what’s up, or find a quick answer. We’ll help you get back to the good stuff.</p>
+          </div>
+          <span class="inline-flex w-fit items-center gap-2 rounded-full border border-sand/20 bg-sand/[.07] px-3 py-2 text-[9px] font-bold uppercase tracking-[.12em] text-sand/80">
+            <span class="h-1.5 w-1.5 rounded-full bg-sand"></span> Electros care
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid gap-6 lg:grid-cols-[.9fr_1.1fr]">
+      <section class="rounded-[22px] border border-white/10 bg-panel/45 p-5 sm:p-7" aria-labelledby="tracker-heading">
+        <div class="mb-5">
+          <p class="text-[9px] font-extrabold uppercase tracking-[.18em] text-muted">Order updates</p>
+          <h2 id="tracker-heading" class="mt-1 text-[20px] font-extrabold tracking-[-.04em]">Quick order tracker</h2>
+          <p class="mt-2 text-[11px] leading-5 text-white/45">Enter the Order ID from your confirmation or My Orders. You can omit a leading #.</p>
+        </div>
+        <form id="tracker-form" class="flex flex-col gap-2.5 sm:flex-row">
+          <label class="sr-only" for="tracker-order-id">Order ID</label>
+          <input id="tracker-order-id" name="orderId" type="text" required autocomplete="off" placeholder="#ORD-12345" class="focus-ring h-11 min-w-0 flex-1 rounded-xl border border-white/10 bg-ink/75 px-3.5 text-[12px] text-white outline-none placeholder:text-white/30 focus:border-sand/50">
+          <button class="focus-ring h-11 rounded-xl bg-sand px-5 text-[11px] font-extrabold text-ink transition hover:bg-[#e8dcc5]" type="submit">Track order</button>
+        </form>
+        <p id="tracker-error" class="mt-3 hidden rounded-xl border border-rose-300/20 bg-rose-400/[.08] px-3.5 py-3 text-[11px] leading-5 text-rose-200" role="alert"></p>
+        <section id="tracker-result" class="mt-5 hidden rounded-2xl border border-white/10 bg-ink/65 p-4 sm:p-5" aria-live="polite" aria-labelledby="tracked-id">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p class="text-[9px] font-bold uppercase tracking-[.14em] text-white/40">Order ID</p>
+              <h3 id="tracked-id" class="mt-1 break-all text-[13px] font-extrabold text-sand"></h3>
+            </div>
+            <span id="tracked-status" class="rounded-full border border-sand/20 bg-sand/[.08] px-2.5 py-1 text-[9px] font-bold text-sand"></span>
+          </div>
+          <p id="tracked-summary" class="mt-2 text-[10px] leading-5 text-white/45"></p>
+          <p id="tracked-cancelled" class="mt-3 hidden rounded-lg border border-rose-300/15 bg-rose-400/[.06] px-3 py-2 text-[10px] text-rose-200">This order was cancelled. Contact support if you need help with it.</p>
+          <ol id="tracker-steps" class="mt-6 grid grid-cols-1 gap-1 sm:grid-cols-5 sm:gap-1" aria-label="Order progress">
+            <li class="progress-item flex flex-col items-center text-center" data-progress-step>
+              <span class="progress-dot grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full border border-white/15 bg-ink text-[10px] font-extrabold text-white/40" data-step-dot>1</span>
+              <span class="progress-copy mt-2"><span class="block text-[8px] font-bold leading-4 text-white/45 sm:text-[9px]" data-step-label>Order Confirmed</span><span class="mt-0.5 block text-[8px] leading-4 text-white/30" data-step-time>Awaiting update</span></span>
+            </li>
+            <li class="progress-item flex flex-col items-center text-center" data-progress-step>
+              <span class="progress-dot grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full border border-white/15 bg-ink text-[10px] font-extrabold text-white/40" data-step-dot>2</span>
+              <span class="progress-copy mt-2"><span class="block text-[8px] font-bold leading-4 text-white/45 sm:text-[9px]" data-step-label>Quality Check &amp; Packed</span><span class="mt-0.5 block text-[8px] leading-4 text-white/30" data-step-time>Awaiting update</span></span>
+            </li>
+            <li class="progress-item flex flex-col items-center text-center" data-progress-step>
+              <span class="progress-dot grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full border border-white/15 bg-ink text-[10px] font-extrabold text-white/40" data-step-dot>3</span>
+              <span class="progress-copy mt-2"><span class="block text-[8px] font-bold leading-4 text-white/45 sm:text-[9px]" data-step-label>Shipped from Hub</span><span class="mt-0.5 block text-[8px] leading-4 text-white/30" data-step-time>Awaiting update</span></span>
+            </li>
+            <li class="progress-item flex flex-col items-center text-center" data-progress-step>
+              <span class="progress-dot grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full border border-white/15 bg-ink text-[10px] font-extrabold text-white/40" data-step-dot>4</span>
+              <span class="progress-copy mt-2"><span class="block text-[8px] font-bold leading-4 text-white/45 sm:text-[9px]" data-step-label>Out for Delivery</span><span class="mt-0.5 block text-[8px] leading-4 text-white/30" data-step-time>Awaiting update</span></span>
+            </li>
+            <li class="progress-item flex flex-col items-center text-center" data-progress-step>
+              <span class="progress-dot grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full border border-white/15 bg-ink text-[10px] font-extrabold text-white/40" data-step-dot>5</span>
+              <span class="progress-copy mt-2"><span class="block text-[8px] font-bold leading-4 text-white/45 sm:text-[9px]" data-step-label>Delivered</span><span class="mt-0.5 block text-[8px] leading-4 text-white/30" data-step-time>Awaiting update</span></span>
+            </li>
+          </ol>
+          <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/[.07] pt-4">
+            <p class="text-[9px] text-white/45">Courier partner <span id="tracked-courier" class="ml-1 font-extrabold text-sand">—</span></p>
+            <button id="simulate-next-stage" class="focus-ring rounded-lg border border-sand/20 px-3 py-2 text-[9px] font-extrabold text-sand transition hover:border-sand/45 hover:bg-sand/[.06]" type="button">Simulate Next Delivery Stage</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="rounded-[22px] border border-white/10 bg-panel/45 p-5 sm:p-7" aria-labelledby="ticket-heading">
+        <div class="mb-5">
+          <p class="text-[9px] font-extrabold uppercase tracking-[.18em] text-muted">We’re listening</p>
+          <h2 id="ticket-heading" class="mt-1 text-[20px] font-extrabold tracking-[-.04em]">Raise a support / warranty ticket</h2>
+          <p class="mt-2 text-[11px] leading-5 text-white/45">Share a few details and keep your Ticket ID handy for follow-up.</p>
+        </div>
+        <form id="ticket-form" class="space-y-3">
+          <div class="grid gap-3 sm:grid-cols-2">
+            <label class="block text-[10px] font-bold text-sand/75">
+              Name
+              <input id="ticket-name" name="name" type="text" maxlength="80" required autocomplete="name" class="focus-ring mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-ink/75 px-3 text-[11px] text-white outline-none placeholder:text-white/30 focus:border-sand/50" placeholder="Your name">
+            </label>
+            <label class="block text-[10px] font-bold text-sand/75">
+              Email or phone
+              <input id="ticket-contact" name="contact" type="text" maxlength="120" required autocomplete="email" class="focus-ring mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-ink/75 px-3 text-[11px] text-white outline-none placeholder:text-white/30 focus:border-sand/50" placeholder="How can we reach you?">
+            </label>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <label class="block text-[10px] font-bold text-sand/75">
+              Order ID <span class="font-medium text-white/35">(optional)</span>
+              <select id="ticket-order" name="orderId" class="focus-ring mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-ink/75 px-3 text-[11px] text-white outline-none focus:border-sand/50">
+                <option value="">No order linked</option>
+              </select>
+            </label>
+            <label class="block text-[10px] font-bold text-sand/75">
+              Issue category
+              <select id="ticket-category" name="category" required class="focus-ring mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-ink/75 px-3 text-[11px] text-white outline-none focus:border-sand/50">
+                <option value="" selected disabled>Choose an issue</option>
+                <option>Warranty Claim</option>
+                <option>Delivery Delay</option>
+                <option>Product Defect</option>
+                <option>Payment Issue</option>
+              </select>
+            </label>
+          </div>
+          <label class="block text-[10px] font-bold text-sand/75">
+            Description
+            <textarea id="ticket-description" name="description" rows="4" maxlength="1200" required class="focus-ring mt-1.5 w-full resize-y rounded-xl border border-white/10 bg-ink/75 px-3 py-2.5 text-[11px] leading-5 text-white outline-none placeholder:text-white/30 focus:border-sand/50" placeholder="Tell us what happened and how we can help..."></textarea>
+          </label>
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button class="focus-ring h-11 rounded-xl bg-sand px-5 text-[11px] font-extrabold text-ink transition hover:bg-[#e8dcc5]" type="submit">Submit ticket</button>
+            <p id="ticket-feedback" class="hidden text-[10px] leading-5" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <section class="mt-8 rounded-[22px] border border-white/10 bg-panel/45 p-5 sm:p-7" aria-labelledby="recent-tickets-heading">
+      <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p class="text-[9px] font-extrabold uppercase tracking-[.18em] text-muted">Your requests</p>
+          <h2 id="recent-tickets-heading" class="mt-1 text-[20px] font-extrabold tracking-[-.04em]">My recent tickets</h2>
+        </div>
+        <span id="ticket-count" class="text-[10px] font-semibold text-white/40">0 tickets</span>
+      </div>
+      <div id="tickets-list" class="grid gap-3 md:grid-cols-2"></div>
+      <p id="tickets-empty" class="rounded-xl border border-dashed border-white/10 px-4 py-8 text-center text-[11px] text-white/40">No support tickets yet. If you need a hand, we’re right here.</p>
+      <p id="tickets-error" class="hidden rounded-xl border border-rose-300/20 bg-rose-400/[.08] px-4 py-3 text-[11px] text-rose-200" role="alert"></p>
+    </section>
+
+    <section class="mt-12" aria-labelledby="faq-heading">
+      <div class="mb-5">
+        <p class="text-[9px] font-extrabold uppercase tracking-[.18em] text-muted">The little details</p>
+        <h2 id="faq-heading" class="mt-1 text-[24px] font-extrabold tracking-[-.05em]">Frequently asked questions<span class="text-sand/45">.</span></h2>
+      </div>
+      <div class="space-y-2.5">
+        <details class="faq rounded-2xl border border-white/10 bg-panel/45 px-4 sm:px-5">
+          <summary class="flex min-h-[58px] items-center justify-between gap-4 py-3 text-[11px] font-extrabold sm:text-[12px]">What does the 1-year warranty cover?<span class="faq-chevron text-sand/60 transition-transform" aria-hidden="true">⌄</span></summary>
+          <p class="pb-4 pr-6 text-[11px] leading-5 text-white/50">Electros products include a 1-year limited warranty against manufacturing defects, starting from the delivery date. Accidental damage and normal wear are not covered. Keep your order confirmation as proof of purchase and raise a Warranty Claim if you need help.</p>
+        </details>
+        <details class="faq rounded-2xl border border-white/10 bg-panel/45 px-4 sm:px-5">
+          <summary class="flex min-h-[58px] items-center justify-between gap-4 py-3 text-[11px] font-extrabold sm:text-[12px]">Can I request a replacement within 7 days?<span class="faq-chevron text-sand/60 transition-transform" aria-hidden="true">⌄</span></summary>
+          <p class="pb-4 pr-6 text-[11px] leading-5 text-white/50">If an item arrives damaged or has a manufacturing defect, raise a request within 7 days of delivery. Keep the product and packaging available while the request is reviewed. Replacement is subject to inspection and stock availability.</p>
+        </details>
+        <details class="faq rounded-2xl border border-white/10 bg-panel/45 px-4 sm:px-5">
+          <summary class="flex min-h-[58px] items-center justify-between gap-4 py-3 text-[11px] font-extrabold sm:text-[12px]">How long do UPI refunds take?<span class="faq-chevron text-sand/60 transition-transform" aria-hidden="true">⌄</span></summary>
+          <p class="pb-4 pr-6 text-[11px] leading-5 text-white/50">After a refund is approved, it is sent to the original payment method. UPI refunds typically appear within 5–7 business days, depending on your bank or payment provider. This storefront uses simulated payments, so no real payment or refund is processed.</p>
+        </details>
+        <details class="faq rounded-2xl border border-white/10 bg-panel/45 px-4 sm:px-5">
+          <summary class="flex min-h-[58px] items-center justify-between gap-4 py-3 text-[11px] font-extrabold sm:text-[12px]">When should my order arrive?<span class="faq-chevron text-sand/60 transition-transform" aria-hidden="true">⌄</span></summary>
+          <p class="pb-4 pr-6 text-[11px] leading-5 text-white/50">Most orders are expected to arrive within 3–7 business days after dispatch. Delivery times vary by destination and service availability. Use the Order ID above for the latest saved status; live carrier tracking is not connected in this demo.</p>
+        </details>
+        <details class="faq rounded-2xl border border-white/10 bg-panel/45 px-4 sm:px-5">
+          <summary class="flex min-h-[58px] items-center justify-between gap-4 py-3 text-[11px] font-extrabold sm:text-[12px]">Where can I find my Order ID?<span class="faq-chevron text-sand/60 transition-transform" aria-hidden="true">⌄</span></summary>
+          <p class="pb-4 pr-6 text-[11px] leading-5 text-white/50">Your Order ID appears on the confirmation screen after checkout and in My Orders on your profile page. You can paste it into the tracker with or without a leading #.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10">
+    <div class="mx-auto flex max-w-[1200px] flex-col gap-4 px-5 py-7 text-[10px] text-white/45 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <a href="index.html" class="text-sm font-extrabold tracking-[-.06em] text-white">electros<span class="text-sand">.</span></a>
+      <p>Good tech. Better everyday. &nbsp;·&nbsp; Made for India, with love.</p>
+      <a href="support.html" aria-current="page" class="font-bold text-sand/75 transition hover:text-sand">Support</a>
+      <p>© 2025 Electros. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const trackerForm = document.getElementById("tracker-form");
+    const trackerError = document.getElementById("tracker-error");
+    const trackerResult = document.getElementById("tracker-result");
+    const ticketForm = document.getElementById("ticket-form");
+    const ticketOrder = document.getElementById("ticket-order");
+    const ticketFeedback = document.getElementById("ticket-feedback");
+    const ticketsList = document.getElementById("tickets-list");
+    const ticketsEmpty = document.getElementById("tickets-empty");
+    const ticketsError = document.getElementById("tickets-error");
+    const trackingStages = [
+      "Order Confirmed",
+      "Quality Check & Packed",
+      "Shipped from Hub",
+      "Out for Delivery",
+      "Delivered"
+    ];
+    const orderStatuses = ["Order Placed", "Packed", "Shipped", "Out for Delivery", "Delivered"];
+    const legacyStageByStatus = new Map([
+      ["order placed", 0],
+      ["order confirmed", 0],
+      ["packed", 1],
+      ["quality check & packed", 1],
+      ["quality check and packed", 1],
+      ["shipped", 2],
+      ["shipped from hub", 2],
+      ["out for delivery", 3],
+      ["delivered", 4],
+      ["completed", 4]
+    ]);
+    let trackedOrderId = "";
+
+    function readStoredArray(key) {
+      const serialized = localStorage.getItem(key);
+      if (serialized === null) return [];
+      const values = JSON.parse(serialized);
+      if (!Array.isArray(values)) throw new TypeError(`${key} must contain an array.`);
+      return values;
+    }
+
+    function normalizeOrderId(value) {
+      return String(value || "").trim().replace(/^#/, "").toUpperCase();
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime())
+        ? "Date unavailable"
+        : date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function setTrackerError(message) {
+      trackerError.textContent = message;
+      trackerError.classList.remove("hidden");
+      trackerResult.classList.add("hidden");
+    }
+
+    function getTrackingStage(order) {
+      if (Number.isSafeInteger(order.trackingStage) && order.trackingStage >= 0 && order.trackingStage < trackingStages.length) {
+        return order.trackingStage;
+      }
+      const status = typeof order.status === "string" ? order.status.trim().toLowerCase() : "";
+      return legacyStageByStatus.has(status) ? legacyStageByStatus.get(status) : 0;
+    }
+
+    function getTrackingTimestamps(order) {
+      const timestamps = Array.isArray(order.trackingTimestamps)
+        ? Array.from({ length: trackingStages.length }, (_, index) =>
+          typeof order.trackingTimestamps[index] === "string" ? order.trackingTimestamps[index] : null
+        )
+        : Array(trackingStages.length).fill(null);
+      if (!timestamps[0]) {
+        const placedAt = new Date(order.createdAt || order.date);
+        if (!Number.isNaN(placedAt.getTime())) timestamps[0] = placedAt.toISOString();
+      }
+      return timestamps;
+    }
+
+    function getCourierPartner(order) {
+      if (order.courierPartner === "BlueDart" || order.courierPartner === "Delhivery") return order.courierPartner;
+      const orderId = typeof order.orderId === "string" ? order.orderId : "";
+      const hash = Array.from(orderId).reduce((sum, character) => sum + character.charCodeAt(0), 0);
+      return hash % 2 === 0 ? "BlueDart" : "Delhivery";
+    }
+
+    function formatTrackingTimestamp(value) {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime())
+        ? "Time not recorded"
+        : new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(date);
+    }
+
+    function renderOrder(order) {
+      const rawStatus = typeof order.status === "string" ? order.status : "Order Placed";
+      const cancelled = rawStatus.trim().toLowerCase() === "cancelled";
+      const activeStep = getTrackingStage(order);
+      const timestamps = getTrackingTimestamps(order);
+
+      document.getElementById("tracked-id").textContent = order.orderId;
+      document.getElementById("tracked-status").textContent = rawStatus;
+      document.getElementById("tracked-courier").textContent = getCourierPartner(order);
+      const itemNames = Array.isArray(order.items)
+        ? order.items.map((item) => item && typeof item.name === "string" ? item.name : "").filter(Boolean)
+        : [];
+      document.getElementById("tracked-summary").textContent = [
+        itemNames.length ? itemNames.join(", ") : "",
+        order.date || order.createdAt ? `Placed ${formatDate(order.date || order.createdAt)}` : ""
+      ].filter(Boolean).join(" · ");
+      document.getElementById("tracked-cancelled").classList.toggle("hidden", !cancelled);
+
+      document.querySelectorAll("[data-progress-step]").forEach((step, index) => {
+        const complete = cancelled ? index === 0 : index < activeStep || activeStep === trackingStages.length - 1;
+        const current = !cancelled && index === activeStep && activeStep < trackingStages.length - 1;
+        const dot = step.querySelector("[data-step-dot]");
+        step.classList.toggle("progress-complete", !cancelled && index < activeStep);
+        dot.classList.toggle("border-sand", complete || current);
+        dot.classList.toggle("bg-sand", complete);
+        dot.classList.toggle("text-ink", complete);
+        dot.classList.toggle("text-sand", current);
+        dot.classList.toggle("border-white/15", !complete && !current);
+        dot.classList.toggle("text-white/40", !complete && !current);
+        dot.textContent = complete ? "✓" : String(index + 1);
+        const label = step.querySelector("[data-step-label]");
+        const time = step.querySelector("[data-step-time]");
+        label.classList.toggle("text-sand", complete || current);
+        time.textContent = timestamps[index]
+          ? formatTrackingTimestamp(timestamps[index])
+          : index <= activeStep && !cancelled
+            ? "Time not recorded"
+            : "Awaiting update";
+        time.classList.toggle("text-sand/55", complete || current);
+        time.classList.toggle("text-white/30", !complete && !current);
+      });
+
+      const nextStageButton = document.getElementById("simulate-next-stage");
+      nextStageButton.disabled = cancelled || activeStep >= trackingStages.length - 1;
+      nextStageButton.textContent = cancelled
+        ? "Order Cancelled"
+        : activeStep >= trackingStages.length - 1
+          ? "Delivered"
+          : "Simulate Next Delivery Stage";
+      nextStageButton.classList.toggle("cursor-not-allowed", nextStageButton.disabled);
+      nextStageButton.classList.toggle("opacity-40", nextStageButton.disabled);
+      trackerError.classList.add("hidden");
+      trackerResult.classList.remove("hidden");
+    }
+
+    function populateOrderOptions(orders) {
+      while (ticketOrder.options.length > 1) ticketOrder.remove(1);
+      const validOrders = orders.filter((order) => order && typeof order.orderId === "string" && order.orderId.trim());
+      if (validOrders.length === 0) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "No saved orders";
+        option.disabled = true;
+        ticketOrder.append(option);
+        return;
+      }
+      validOrders.forEach((order) => {
+        const option = document.createElement("option");
+        option.value = order.orderId;
+        const itemNames = Array.isArray(order.items)
+          ? order.items.map((item) => item && typeof item.name === "string" ? item.name : "").filter(Boolean).join(", ")
+          : "";
+        option.textContent = itemNames ? `${order.orderId} · ${itemNames}` : order.orderId;
+        ticketOrder.append(option);
+      });
+    }
+
+    function generateTicketId(tickets) {
+      const usedIds = new Set(tickets.map((ticket) => ticket && ticket.ticketId).filter((ticketId) => typeof ticketId === "string"));
+      for (let attempt = 0; attempt < 100; attempt += 1) {
+        const candidate = `#TKT-${Math.floor(1000 + Math.random() * 9000)}`;
+        if (!usedIds.has(candidate)) return candidate;
+      }
+      let candidate = `#TKT-${Date.now()}`;
+      let suffix = 1;
+      while (usedIds.has(candidate)) {
+        candidate = `#TKT-${Date.now()}-${suffix}`;
+        suffix += 1;
+      }
+      return candidate;
+    }
+
+    function showTicketFeedback(message, isError) {
+      ticketFeedback.textContent = message;
+      ticketFeedback.classList.remove("hidden", "text-rose-200", "text-sand");
+      ticketFeedback.classList.add(isError ? "text-rose-200" : "text-sand");
+    }
+
+    function renderTickets(tickets) {
+      const recentTickets = [...tickets]
+        .filter((ticket) => ticket && typeof ticket.ticketId === "string")
+        .sort((left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime())
+        .slice(0, 6);
+      ticketsList.replaceChildren();
+      document.getElementById("ticket-count").textContent = `${tickets.length} ${tickets.length === 1 ? "ticket" : "tickets"}`;
+      ticketsEmpty.classList.toggle("hidden", recentTickets.length > 0);
+      recentTickets.forEach((ticket) => {
+        const card = document.createElement("article");
+        card.className = "rounded-xl border border-white/10 bg-ink/55 p-4";
+        const top = document.createElement("div");
+        top.className = "flex flex-wrap items-center justify-between gap-2";
+        const id = document.createElement("p");
+        id.className = "text-[10px] font-extrabold text-sand";
+        id.textContent = ticket.ticketId;
+        const status = document.createElement("span");
+        status.className = "rounded-full border border-sand/15 bg-sand/[.06] px-2 py-1 text-[8px] font-bold text-sand/70";
+        status.textContent = typeof ticket.status === "string" ? ticket.status : "Open";
+        top.append(id, status);
+        const category = document.createElement("p");
+        category.className = "mt-3 text-[9px] font-bold uppercase tracking-[.12em] text-muted";
+        category.textContent = typeof ticket.category === "string" ? ticket.category : "Support request";
+        const description = document.createElement("p");
+        description.className = "mt-1 whitespace-pre-wrap break-words text-[10px] leading-5 text-white/65";
+        description.textContent = typeof ticket.description === "string" ? ticket.description : "";
+        const meta = document.createElement("p");
+        meta.className = "mt-3 text-[9px] text-white/35";
+        meta.textContent = `${ticket.orderId ? `Order ${ticket.orderId} · ` : ""}${formatDate(ticket.createdAt)}`;
+        card.append(top, category, description, meta);
+        ticketsList.append(card);
+      });
+    }
+
+    trackerForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let orders;
+      try {
+        orders = readStoredArray("orders");
+      } catch (error) {
+        console.error("Unable to read saved orders for tracking.", error);
+        setTrackerError("Your saved order data could not be read. Please check your orders and try again.");
+        return;
+      }
+      const requestedId = normalizeOrderId(document.getElementById("tracker-order-id").value);
+      const order = orders.find((item) => item && typeof item.orderId === "string" && normalizeOrderId(item.orderId) === requestedId);
+      if (!order) {
+        setTrackerError("We couldn’t find that Order ID in your saved orders. Check the ID and try again.");
+        return;
+      }
+      trackedOrderId = order.orderId;
+      renderOrder(order);
+    });
+
+    document.getElementById("simulate-next-stage").addEventListener("click", () => {
+      let orders;
+      try {
+        orders = readStoredArray("orders");
+      } catch (error) {
+        console.error("Unable to read saved orders for tracking.", error);
+        setTrackerError("Your saved order data could not be read. Please try again.");
+        return;
+      }
+
+      const order = orders.find((item) =>
+        item && typeof item.orderId === "string" && normalizeOrderId(item.orderId) === normalizeOrderId(trackedOrderId)
+      );
+      if (!order) {
+        setTrackerError("This order is no longer available in your saved orders.");
+        return;
+      }
+      if (typeof order.status === "string" && order.status.trim().toLowerCase() === "cancelled") {
+        renderOrder(order);
+        return;
+      }
+
+      const currentStage = getTrackingStage(order);
+      if (currentStage >= trackingStages.length - 1) {
+        renderOrder(order);
+        return;
+      }
+      const nextStage = currentStage + 1;
+      const timestamps = getTrackingTimestamps(order);
+      timestamps[nextStage] = new Date().toISOString();
+      order.trackingTimestamps = timestamps;
+      order.trackingStage = nextStage;
+      order.status = orderStatuses[nextStage];
+      order.courierPartner = getCourierPartner(order);
+
+      try {
+        localStorage.setItem("orders", JSON.stringify(orders));
+      } catch (error) {
+        console.error("Unable to save the simulated delivery update.", error);
+        setTrackerError("The delivery update could not be saved. Please try again.");
+        return;
+      }
+      renderOrder(order);
+    });
+
+    ticketForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let tickets;
+      try {
+        tickets = readStoredArray("supportTickets");
+        const ticketId = generateTicketId(tickets);
+        const ticket = {
+          ticketId,
+          createdAt: new Date().toISOString(),
+          name: document.getElementById("ticket-name").value.trim(),
+          contact: document.getElementById("ticket-contact").value.trim(),
+          orderId: ticketOrder.value,
+          category: document.getElementById("ticket-category").value,
+          description: document.getElementById("ticket-description").value.trim(),
+          status: "Open"
+        };
+        if (!ticket.name || !ticket.contact || !ticket.category || !ticket.description) {
+          showTicketFeedback("Please complete all required fields before submitting.", true);
+          return;
+        }
+        tickets.unshift(ticket);
+        localStorage.setItem("supportTickets", JSON.stringify(tickets));
+        renderTickets(tickets);
+        ticketForm.reset();
+        showTicketFeedback(`Ticket ${ticketId} submitted. Save this ID for your records.`, false);
+      } catch (error) {
+        console.error("Unable to save the support ticket.", error);
+        showTicketFeedback("Your ticket could not be saved. Please try again.", true);
+      }
+    });
+
+    try {
+      const savedOrders = readStoredArray("orders");
+      populateOrderOptions(savedOrders);
+    } catch (error) {
+      console.error("Unable to load saved orders for the ticket form.", error);
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = "Saved orders unavailable";
+      option.disabled = true;
+      ticketOrder.append(option);
+    }
+
+    try {
+      const user = JSON.parse(localStorage.getItem("electrosUser") || "null");
+      if (user && typeof user.name === "string") document.getElementById("ticket-name").value = user.name;
+    } catch (error) {
+      console.error("Unable to load the saved profile name.", error);
+    }
+
+    try {
+      renderTickets(readStoredArray("supportTickets"));
+    } catch (error) {
+      console.error("Unable to load recent support tickets.", error);
+      ticketsEmpty.classList.add("hidden");
+      ticketsError.textContent = "Your saved support tickets could not be read.";
+      ticketsError.classList.remove("hidden");
+    }
+
+    const linkedOrderId = new URLSearchParams(window.location.search).get("orderId");
+    if (linkedOrderId) {
+      document.getElementById("tracker-order-id").value = linkedOrderId;
+      trackerForm.requestSubmit();
+    }
+  </script>
+</body>
+</html>

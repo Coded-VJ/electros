@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#222831">
+  <meta name="description" content="Sign in to Electros with your mobile number.">
+  <title>Sign in — Electros</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#222831",
+            panel: "#393E46",
+            muted: "#948979",
+            sand: "#DFD0B8"
+          },
+          fontFamily: {
+            sans: ["Manrope", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #222831; color: #DFD0B8; font-family: Manrope, sans-serif; }
+    button, input { font: inherit; }
+    .storm { background: radial-gradient(ellipse at 50% 46%, rgba(148,137,121,.16), transparent 49%), linear-gradient(135deg, #222831, #393E46 58%, #222831); }
+    .storm::before { position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at 18% 20%, rgba(0,240,255,.07), transparent 34%), radial-gradient(ellipse at 82% 78%, rgba(250,204,21,.06), transparent 36%); content: ""; animation: electric-breathe 9s ease-in-out infinite; }
+    .lightning-bolt { fill: none; stroke: #DFD0B8; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 5px rgba(223,208,184,.3)); opacity: 0; }
+    .bolt-one { animation: lightning-flash 12s ease-in-out infinite; }
+    .bolt-two { animation: lightning-flash 15s ease-in-out 4s infinite; }
+    @keyframes lightning-flash {
+      0%, 34%, 39%, 100% { opacity: 0; }
+      35%, 37% { opacity: .12; }
+      36%, 38% { opacity: .04; }
+    }
+    @keyframes electric-breathe {
+      0%, 100% { opacity: .45; transform: scale(1); }
+      50% { opacity: .8; transform: scale(1.025); }
+    }
+    .glass-card { background: rgba(34,40,49,.86); box-shadow: 0 30px 100px rgba(18,21,26,.36); backdrop-filter: blur(18px); }
+    .focus-ring:focus { outline: 2px solid rgba(223,208,184,.8); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="storm relative isolate flex min-h-screen items-center justify-center overflow-hidden px-5 py-10 sm:px-8">
+    <div class="pointer-events-none absolute inset-0 -z-10 opacity-60" aria-hidden="true">
+      <svg class="h-full w-full" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <path class="lightning-bolt bolt-one" stroke-width="1.6" d="M270 158 242 237h35l-47 108"/>
+        <path class="lightning-bolt bolt-two" stroke-width="1.4" d="m1188 450-25 72h32l-43 97"/>
+      </svg>
+    </div>
+    <div class="pointer-events-none absolute inset-0 -z-10 opacity-20" aria-hidden="true" style="background-image:radial-gradient(rgba(223,208,184,.2) .6px, transparent .6px);background-size:6px 6px"></div>
+
+    <div class="relative z-10 w-full max-w-[440px]">
+      <a href="index.html" class="mb-7 inline-flex items-center gap-2.5" aria-label="Electros home">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-sand text-ink">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.7 13h5.1l-.5 8.2L18.3 11h-5.2l.1-8.2Z" fill="currentColor"/></svg>
+        </span>
+        <span class="text-[22px] font-extrabold tracking-[-.07em]">electros<span class="text-sand">.</span></span>
+      </a>
+
+      <section class="glass-card rounded-[26px] border border-sand/15 p-6 sm:p-9">
+        <div class="mb-7">
+          <p class="mb-2 text-[10px] font-extrabold uppercase tracking-[.2em] text-sand/75">A better everyday starts here</p>
+          <h1 class="text-[30px] font-extrabold leading-tight tracking-[-.06em] sm:text-[35px]">Welcome to <span class="text-sand">Electros.</span></h1>
+          <p class="mt-2 text-[12px] leading-5 text-sand/60">Sign in to pick up right where your next favourite begins.</p>
+        </div>
+
+        <form id="phone-form" novalidate>
+          <label for="name-input" class="mb-2 block text-[11px] font-bold text-sand/80">Your name</label>
+          <input id="name-input" name="name" type="text" autocomplete="name" maxlength="32" placeholder="e.g. Ananya" class="focus-ring mb-5 h-12 w-full rounded-xl border border-sand/15 bg-panel/70 px-4 text-[13px] text-sand placeholder:text-sand/35" required>
+
+          <label for="phone-input" class="mb-2 block text-[11px] font-bold text-sand/80">Indian mobile number</label>
+          <div class="flex h-12 overflow-hidden rounded-xl border border-sand/15 bg-panel/70 focus-within:border-sand/55">
+            <span class="grid shrink-0 place-items-center border-r border-sand/15 px-4 text-[13px] font-bold text-sand/70">+91</span>
+            <input id="phone-input" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="10" placeholder="10-digit mobile number" class="focus-ring min-w-0 flex-1 bg-transparent px-3 text-[13px] text-sand placeholder:text-sand/35" required>
+          </div>
+          <p class="mt-2 text-[10px] text-sand/45">We’ll send a one-time code to verify your number.</p>
+
+          <button type="submit" class="focus-ring mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-sand text-[12px] font-extrabold text-ink transition hover:bg-[#e8dcc5]">
+            Continue with mobile
+            <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M3.5 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+
+        <form id="otp-form" class="hidden" novalidate>
+          <button id="back-button" type="button" class="mb-5 inline-flex items-center gap-1.5 text-[11px] font-bold text-sand/60 transition hover:text-sand">
+            <svg viewBox="0 0 20 20" class="h-4 w-4 rotate-180" fill="none" aria-hidden="true"><path d="M3.5 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Change number
+          </button>
+          <label for="otp-input" class="mb-2 block text-[11px] font-bold text-sand/80">4-digit verification code</label>
+          <p class="mb-4 text-[11px] text-sand/55">Enter the code for <span id="phone-preview" class="font-bold text-sand"></span></p>
+          <input id="otp-input" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="• • • •" class="focus-ring h-14 w-full rounded-xl border border-sand/15 bg-panel/70 text-center text-[22px] font-extrabold tracking-[.55em] text-sand placeholder:text-sand/35" required>
+          <p class="mt-3 rounded-xl border border-sand/10 bg-sand/[.06] px-3 py-2.5 text-[10px] leading-4 text-sand/65" role="note">Demo mode: enter any 4 digits to continue. Sample OTP: <strong class="text-sand">1234</strong>.</p>
+          <button type="submit" class="focus-ring mt-5 h-12 w-full rounded-xl bg-sand text-[12px] font-extrabold text-ink transition hover:bg-[#e8dcc5]">Verify &amp; sign in</button>
+        </form>
+
+        <p id="form-message" class="mt-4 hidden rounded-lg border border-[#948979]/35 bg-[#948979]/10 px-3 py-2 text-[11px] leading-4 text-sand" role="alert"></p>
+
+        <div class="my-6 flex items-center gap-3 text-[9px] font-bold uppercase tracking-[.16em] text-sand/35">
+          <span class="h-px flex-1 bg-sand/10"></span> or <span class="h-px flex-1 bg-sand/10"></span>
+        </div>
+        <button id="guest-button" type="button" class="focus-ring flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-sand/20 bg-transparent text-[12px] font-bold text-sand transition hover:border-sand/45 hover:bg-sand/[.06]">
+          <svg viewBox="0 0 24 24" class="h-[17px] w-[17px]" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.3" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 20c.5-3.4 2.7-5.1 6.5-5.1s6 1.7 6.5 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Continue as guest
+        </button>
+        <p class="mt-5 text-center text-[10px] leading-5 text-sand/40">Demo sign-in only. No SMS will be sent and no account is created.</p>
+      </section>
+
+      <a href="index.html" class="mt-6 flex items-center justify-center gap-2 text-[11px] font-semibold text-sand/50 transition hover:text-sand">
+        <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M16.5 10h-13m5 5-5-5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to the store
+      </a>
+    </div>
+
+    <div id="toast" class="pointer-events-none fixed bottom-5 left-1/2 z-20 -translate-x-1/2 translate-y-3 rounded-xl border border-sand/15 bg-panel px-5 py-3 text-center text-[11px] font-semibold text-sand opacity-0 shadow-2xl transition-all sm:text-[12px]" role="status" aria-live="polite"></div>
+  </main>
+
+  <script>
+    const phoneForm = document.getElementById("phone-form");
+    const otpForm = document.getElementById("otp-form");
+    const nameInput = document.getElementById("name-input");
+    const phoneInput = document.getElementById("phone-input");
+    const otpInput = document.getElementById("otp-input");
+    const formMessage = document.getElementById("form-message");
+    let pendingUser = null;
+    let toastTimer;
+
+    function showMessage(message) {
+      formMessage.textContent = message;
+      formMessage.classList.remove("hidden");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.remove("opacity-0", "translate-y-3");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add("opacity-0", "translate-y-3"), 3200);
+    }
+
+    function saveSession(user) {
+      try {
+        localStorage.setItem("electrosUser", JSON.stringify(user));
+      } catch (error) {
+        console.error("Unable to save the Electros session.", error);
+        showMessage("Your browser could not save this session. Check local storage settings and try again.");
+        return;
+      }
+      window.location.href = "index.html";
+    }
+
+    phoneInput.addEventListener("input", () => {
+      phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10);
+    });
+
+    otpInput.addEventListener("input", () => {
+      otpInput.value = otpInput.value.replace(/\D/g, "").slice(0, 4);
+    });
+
+    phoneForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      formMessage.classList.add("hidden");
+      const name = nameInput.value.trim();
+      const phone = phoneInput.value.trim();
+
+      if (!name) {
+        showMessage("Please enter your name to continue.");
+        nameInput.focus();
+        return;
+      }
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        showMessage("Enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.");
+        phoneInput.focus();
+        return;
+      }
+
+      pendingUser = { name, phone: `+91${phone}` };
+      document.getElementById("phone-preview").textContent = `+91 ${phone}`;
+      phoneForm.classList.add("hidden");
+      otpForm.classList.remove("hidden");
+      otpInput.focus();
+      showToast("Demo OTP: 1234. Any 4 digits will work.");
+    });
+
+    document.getElementById("back-button").addEventListener("click", () => {
+      otpForm.classList.add("hidden");
+      phoneForm.classList.remove("hidden");
+      formMessage.classList.add("hidden");
+      otpInput.value = "";
+      phoneInput.focus();
+    });
+
+    otpForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      formMessage.classList.add("hidden");
+      if (!pendingUser) {
+        showMessage("Start by entering your name and mobile number.");
+        otpForm.classList.add("hidden");
+        phoneForm.classList.remove("hidden");
+        return;
+      }
+      if (!/^\d{4}$/.test(otpInput.value)) {
+        showMessage("Enter any 4-digit code to finish this demo sign-in.");
+        otpInput.focus();
+        return;
+      }
+      saveSession(pendingUser);
+    });
+
+    document.getElementById("guest-button").addEventListener("click", () => {
+      saveSession({ name: "Guest", phone: null, guest: true });
+    });
+  </script>
+</body>
+</html>

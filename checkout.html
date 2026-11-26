@@ -1,0 +1,939 @@
+ <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#222831">
+  <meta name="description" content="Review your Electros order and complete the demo checkout.">
+  <title>Checkout — Electros</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#222831",
+            panel: "#393E46",
+            muted: "#948979",
+            sand: "#DFD0B8"
+          },
+          fontFamily: { sans: ["Manrope", "sans-serif"] }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #222831; color: #DFD0B8; font-family: Manrope, sans-serif; }
+    button, input, textarea, select { font: inherit; }
+    .payment-tab.payment-active,
+    .payment-tab.payment-active:hover {
+      background: #DFD0B8;
+      border-color: #DFD0B8;
+      color: #111827;
+      font-weight: 700;
+    }
+    .focus-ring:focus { outline: 2px solid rgba(223,208,184,.8); outline-offset: 2px; }
+    @media print {
+      body { background: #fff !important; color: #222831 !important; }
+      #checkout-header, #checkout-view, #processing-overlay, #confirmation-actions { display: none !important; }
+      #confirmation-view { display: block !important; }
+      #invoice-panel { border: 0 !important; background: #fff !important; color: #222831 !important; box-shadow: none !important; }
+      #invoice-panel * { color: #222831 !important; }
+    }
+  </style>
+</head>
+<body>
+  <header id="checkout-header" class="border-b border-white/10">
+    <div class="mx-auto flex h-[72px] max-w-[1120px] items-center justify-between px-5 sm:px-8">
+      <a href="index.html" class="flex items-center gap-2.5" aria-label="Electros home">
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-sand text-ink">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.7 13h5.1l-.5 8.2L18.3 11h-5.2l.1-8.2Z" fill="currentColor"/></svg>
+        </span>
+        <span class="text-xl font-extrabold tracking-[-.07em]">electros<span class="text-sand">.</span></span>
+      </a>
+      <span class="text-[9px] font-bold uppercase tracking-[.15em] text-sand/45 sm:text-[10px]">Secure demo checkout</span>
+    </div>
+  </header>
+
+  <div id="signin-required-modal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/75 p-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="signin-required-title" aria-hidden="true">
+    <button class="absolute inset-0 h-full w-full cursor-default" type="button" aria-label="Close sign-in dialog" data-signin-close></button>
+    <section class="relative z-10 w-full max-w-[420px] rounded-[24px] border border-sand/20 bg-ink p-6 shadow-2xl sm:p-8">
+      <a href="index.html" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sand/60 transition hover:text-sand" aria-label="Return to cart">
+        <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </a>
+      <span class="grid h-11 w-11 place-items-center rounded-2xl bg-sand/10 text-sand">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true"><path d="M12 3v10m0 0 4-4m-4 4-4-4M5 15v4h14v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <p class="mt-5 text-[9px] font-extrabold uppercase tracking-[.18em] text-muted">One quick step</p>
+      <h2 id="signin-required-title" class="mt-2 text-[22px] font-extrabold leading-tight tracking-[-.04em]">Sign In Required to Complete Payment</h2>
+      <p class="mt-3 text-[11px] leading-5 text-white/55">Your bag is saved in this browser. Sign in to continue securely — your selected items and add-ons will still be here.</p>
+      <a href="login.html" class="mt-6 flex h-12 items-center justify-center rounded-xl bg-sand px-4 text-[11px] font-extrabold text-ink transition hover:bg-[#e8dcc5]">Sign in to continue</a>
+      <button class="mt-3 w-full rounded-xl border border-white/10 py-3 text-[10px] font-bold text-white/55 transition hover:border-white/25 hover:text-white" type="button" data-signin-close>Not now</button>
+    </section>
+  </div>
+
+  <main id="checkout-view" class="mx-auto max-w-[1120px] px-5 py-8 sm:px-8 sm:py-12">
+    <div class="mb-8">
+      <p class="mb-2 text-[10px] font-extrabold uppercase tracking-[.18em] text-muted">Almost yours</p>
+      <h1 class="text-[32px] font-extrabold tracking-[-.055em] sm:text-[40px]">Checkout<span class="text-sand/45">.</span></h1>
+      <p class="mt-2 text-[12px] text-sand/55">A few details, then your everyday tech is on its way.</p>
+    </div>
+
+    <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-8">
+      <form id="checkout-form" class="space-y-5" novalidate>
+        <section class="rounded-2xl border border-white/10 bg-panel/45 p-5 sm:p-6">
+          <div class="mb-5 flex items-center gap-3">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-sand/10 text-[12px] font-extrabold text-sand">01</span>
+            <div>
+              <h2 class="text-[15px] font-extrabold">Shipping address</h2>
+              <p class="mt-0.5 text-[10px] text-sand/45">Where should we deliver your order?</p>
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block sm:col-span-2">
+              <span class="mb-1.5 block text-[10px] font-bold text-sand/75">Full name</span>
+              <input id="shipping-name" name="name" type="text" autocomplete="name" maxlength="60" class="focus-ring h-11 w-full rounded-xl border border-sand/15 bg-ink/60 px-3.5 text-[12px] text-sand placeholder:text-sand/30" placeholder="Name on the delivery" required>
+            </label>
+
+            <label class="block sm:col-span-2">
+              <span class="mb-1.5 block text-[10px] font-bold text-sand/75">Phone number</span>
+              <div class="flex h-11 overflow-hidden rounded-xl border border-sand/15 bg-ink/60 focus-within:border-sand/50">
+                <span class="grid shrink-0 place-items-center border-r border-sand/15 px-3 text-[11px] font-bold text-sand/55">+91</span>
+                <input id="shipping-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="10" class="focus-ring min-w-0 flex-1 bg-transparent px-3 text-[12px] text-sand placeholder:text-sand/30" placeholder="10-digit mobile number" required>
+              </div>
+            </label>
+
+            <label class="block sm:col-span-2">
+              <span class="mb-1.5 block text-[10px] font-bold text-sand/75">Address</span>
+              <textarea id="shipping-address" name="address" rows="2" maxlength="180" autocomplete="street-address" class="focus-ring w-full resize-y rounded-xl border border-sand/15 bg-ink/60 px-3.5 py-3 text-[12px] text-sand placeholder:text-sand/30" placeholder="House / flat, street, area" required></textarea>
+            </label>
+
+            <label class="block">
+              <span class="mb-1.5 block text-[10px] font-bold text-sand/75">City</span>
+              <input id="shipping-city" name="city" type="text" maxlength="60" autocomplete="address-level2" class="focus-ring h-11 w-full rounded-xl border border-sand/15 bg-ink/60 px-3.5 text-[12px] text-sand placeholder:text-sand/30" placeholder="City" required>
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-[10px] font-bold text-sand/75">Indian state / UT</span>
+              <select id="shipping-state" name="state" autocomplete="address-level1" class="focus-ring h-11 w-full rounded-xl border border-sand/15 bg-ink px-3 text-[12px] text-sand" required>
+                <option value="">Select state / UT</option>
+                <option>Andhra Pradesh</option>
+                <option>Arunachal Pradesh</option>
+                <option>Assam</option>
+                <option>Bihar</option>
+                <option>Chhattisgarh</option>
+                <option>Goa</option>
+                <option>Gujarat</option>
+                <option>Haryana</option>
+                <option>Himachal Pradesh</option>
+                <option>Jharkhand</option>
+                <option>Karnataka</option>
+                <option>Kerala</option>
+                <option>Madhya Pradesh</option>
+                <option>Maharashtra</option>
+                <option>Manipur</option>
+                <option>Meghalaya</option>
+                <option>Mizoram</option>
+                <option>Nagaland</option>
+                <option>Odisha</option>
+                <option>Punjab</option>
+                <option>Rajasthan</option>
+                <option>Sikkim</option>
+                <option>Tamil Nadu</option>
+                <option>Telangana</option>
+                <option>Tripura</option>
+                <option>Uttar Pradesh</option>
+                <option>Uttarakhand</option>
+                <option>West Bengal</option>
+                <option>Andaman and Nicobar Islands</option>
+                <option>Chandigarh</option>
+                <option>Dadra and Nagar Haveli and Daman and Diu</option>
+                <option>Delhi</option>
+                <option>Jammu and Kashmir</option>
+                <option>Ladakh</option>
+                <option>Lakshadweep</option>
+                <option>Puducherry</option>
+              </select>
+            </label>
+            <label class="block sm:max-w-[220px]">
+              <span class="mb-1.5 block text-[10px] font-bold text-sand/75">PIN code</span>
+              <input id="shipping-pin" name="postalCode" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="6" class="focus-ring h-11 w-full rounded-xl border border-sand/15 bg-ink/60 px-3.5 text-[12px] text-sand placeholder:text-sand/30" placeholder="6-digit PIN" required>
+            </label>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-white/10 bg-panel/45 p-5 sm:p-6">
+          <div class="mb-5 flex items-center gap-3">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-sand/10 text-[12px] font-extrabold text-sand">02</span>
+            <div>
+              <h2 class="text-[15px] font-extrabold">Payment method</h2>
+              <p class="mt-0.5 text-[10px] text-sand/45">Choose how you’d like to pay.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2" role="tablist" aria-label="Payment method">
+            <button class="payment-tab payment-active rounded-xl border border-sand/15 px-2 py-2.5 text-[10px] font-extrabold transition sm:text-[11px]" type="button" role="tab" aria-selected="true" aria-controls="upi-panel" data-payment="upi">UPI</button>
+            <button class="payment-tab rounded-xl border border-sand/15 px-2 py-2.5 text-[10px] font-extrabold text-sand/60 transition hover:border-sand/40 sm:text-[11px]" type="button" role="tab" aria-selected="false" aria-controls="card-panel" data-payment="card">Card payment</button>
+            <button class="payment-tab rounded-xl border border-sand/15 px-2 py-2.5 text-[10px] font-extrabold text-sand/60 transition hover:border-sand/40 sm:text-[11px]" type="button" role="tab" aria-selected="false" aria-controls="cod-panel" data-payment="cod">Cash on delivery</button>
+          </div>
+
+          <div id="upi-panel" class="payment-panel mt-4 rounded-xl border border-sand/15 bg-gradient-to-br from-[#393E46] to-[#292f38] p-4 sm:p-5" role="tabpanel">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <p class="text-[12px] font-extrabold">Scan to pay</p>
+                <p class="mt-1 text-[9px] text-sand/45">Demo UPI session · no real payment is processed</p>
+              </div>
+              <span class="rounded-full border border-sand/15 bg-sand/[.06] px-2.5 py-1 text-[8px] font-extrabold tracking-[.12em] text-sand/70">UPI QR</span>
+            </div>
+            <div class="flex flex-col items-center gap-4 rounded-xl border border-white/[.07] bg-ink/50 p-4 sm:flex-row sm:items-start">
+              <div class="shrink-0 rounded-xl bg-white p-2.5 shadow-[0_8px_30px_rgba(0,0,0,.24)]">
+                <svg id="upi-qr" class="h-[164px] w-[164px]" viewBox="0 0 37 37" role="img" aria-label="Simulated UPI QR code for Electros"></svg>
+              </div>
+              <div class="min-w-0 flex-1 text-center sm:text-left">
+                <p class="text-[10px] font-bold text-sand/55">Scan with</p>
+                <p class="mt-1.5 text-[10px] font-extrabold leading-5 text-sand">GPay <span class="px-1 text-sand/25">·</span> PhonePe <span class="px-1 text-sand/25">·</span> Paytm <span class="px-1 text-sand/25">·</span> BHIM</p>
+                <div class="mt-3 flex flex-wrap items-end justify-center gap-x-5 gap-y-2 sm:justify-start">
+                  <div>
+                    <p class="text-[8px] font-bold uppercase tracking-[.13em] text-sand/40">Payable amount</p>
+                    <p id="upi-amount" class="mt-0.5 text-[20px] font-extrabold tracking-[-.04em] text-sand"></p>
+                  </div>
+                  <div>
+                    <p class="text-[8px] font-bold uppercase tracking-[.13em] text-sand/40">Merchant UPI ID</p>
+                    <p class="mt-1 text-[10px] font-extrabold text-sand">store@okaxis</p>
+                  </div>
+                </div>
+                <div class="mt-3 flex items-center justify-center gap-2 text-[9px] text-sand/50 sm:justify-start">
+                  <svg viewBox="0 0 20 20" class="h-3.5 w-3.5 text-sand/65" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M10 6v4l2.5 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  QR expires in <span id="upi-countdown" class="font-extrabold tabular-nums text-sand">05:00</span>
+                </div>
+                <button id="upi-verify-pay" class="focus-ring mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-sand px-4 text-[10px] font-extrabold text-ink transition hover:bg-[#e8dcc5] sm:max-w-[210px]" type="button">
+                  Verify &amp; Pay
+                  <svg viewBox="0 0 20 20" class="h-3.5 w-3.5" fill="none" aria-hidden="true"><path d="M3.5 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="card-panel" class="payment-panel mt-4 hidden rounded-xl border border-white/10 bg-ink/45 p-4" role="tabpanel" aria-hidden="true">
+            <label class="block">
+              <span class="mb-1.5 block text-[10px] font-bold text-sand/70">Card number</span>
+              <input id="card-number" type="text" inputmode="numeric" autocomplete="cc-number" maxlength="19" class="focus-ring h-10 w-full rounded-lg border border-sand/15 bg-panel/70 px-3 text-[12px] tracking-[.12em] text-sand placeholder:text-sand/30" placeholder="1234 5678 9012 3456">
+            </label>
+            <div class="mt-3 grid grid-cols-2 gap-3">
+              <label class="block">
+                <span class="mb-1.5 block text-[10px] font-bold text-sand/70">Expiry (MM/YY)</span>
+                <input id="card-expiry" type="text" inputmode="numeric" autocomplete="cc-exp" maxlength="5" class="focus-ring h-10 w-full rounded-lg border border-sand/15 bg-panel/70 px-3 text-[12px] text-sand placeholder:text-sand/30" placeholder="MM/YY">
+              </label>
+              <label class="block">
+                <span class="mb-1.5 block text-[10px] font-bold text-sand/70">CVV</span>
+                <input id="card-cvv" type="password" inputmode="numeric" autocomplete="cc-csc" maxlength="4" class="focus-ring h-10 w-full rounded-lg border border-sand/15 bg-panel/70 px-3 text-[12px] text-sand placeholder:text-sand/30" placeholder="•••">
+              </label>
+            </div>
+            <p class="mt-3 text-[9px] text-sand/40">Demo only. Do not enter real card details.</p>
+          </div>
+
+          <div id="cod-panel" class="payment-panel mt-4 hidden rounded-xl border border-white/10 bg-ink/45 p-4" role="tabpanel" aria-hidden="true">
+            <p class="text-[12px] font-extrabold">Pay when it arrives</p>
+            <p class="mt-1.5 text-[10px] leading-4 text-sand/50">Have the order total ready at delivery. This is a demo order; no payment will be collected.</p>
+          </div>
+        </section>
+
+        <p id="checkout-message" class="hidden rounded-xl border border-[#948979]/35 bg-[#948979]/10 px-4 py-3 text-[11px] leading-5 text-sand" role="alert"></p>
+      </form>
+
+      <aside class="h-fit rounded-2xl border border-white/10 bg-panel/55 p-5 sm:p-6 lg:sticky lg:top-6">
+        <h2 class="text-[16px] font-extrabold">Order summary <span id="summary-item-count" class="ml-1 text-[11px] font-semibold text-muted"></span></h2>
+        <div id="checkout-items" class="mt-3 max-h-[250px] divide-y divide-white/10 overflow-y-auto"></div>
+
+        <div class="mt-4 flex gap-2">
+          <label class="min-w-0 flex-1">
+            <span class="sr-only">Coupon code</span>
+            <input id="coupon-input" type="text" autocomplete="off" maxlength="24" class="focus-ring h-10 w-full rounded-lg border border-sand/15 bg-ink/60 px-3 text-[11px] uppercase text-sand placeholder:normal-case placeholder:text-sand/35" placeholder="Coupon code">
+          </label>
+          <button id="coupon-button" class="focus-ring h-10 rounded-lg border border-sand/25 px-3 text-[10px] font-extrabold text-sand transition hover:bg-sand/[.08]" type="button">Apply</button>
+        </div>
+        <p id="coupon-message" class="mt-2 hidden text-[10px]" role="status" aria-live="polite"></p>
+
+        <div class="mt-5 space-y-3 text-[11px]">
+          <div class="flex justify-between text-sand/55"><span>Subtotal</span><span id="checkout-subtotal" class="font-bold text-sand"></span></div>
+          <div id="discount-row" class="hidden justify-between text-[#DFD0B8]"><span>Discount (FIRST10)</span><span id="checkout-discount" class="font-bold"></span></div>
+          <div class="flex justify-between text-sand/55"><span>GST (18%)</span><span id="checkout-gst" class="font-bold text-sand"></span></div>
+          <div class="flex justify-between border-t border-white/10 pt-4 text-[15px] font-extrabold"><span>Total</span><span id="checkout-total"></span></div>
+        </div>
+
+        <button id="pay-now-button" form="checkout-form" type="submit" class="focus-ring mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-sand text-[12px] font-extrabold text-ink transition hover:bg-[#e8dcc5] disabled:cursor-wait disabled:opacity-70">
+          <span id="pay-button-label">Pay Now</span>
+          <span id="pay-button-total"></span>
+        </button>
+        <p class="mt-3 text-center text-[9px] text-sand/40">Demo payment only — no real payment is processed.</p>
+      </aside>
+    </div>
+  </main>
+
+  <main id="confirmation-view" class="mx-auto hidden max-w-[760px] px-5 py-10 sm:px-8 sm:py-16" aria-live="polite">
+    <div class="mb-7 text-center">
+      <div class="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-sand text-ink">
+        <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <p class="text-[10px] font-extrabold uppercase tracking-[.18em] text-muted">All done</p>
+      <h1 class="mt-1 text-[32px] font-extrabold tracking-[-.055em] sm:text-[40px]">Order confirmed<span class="text-sand/45">.</span></h1>
+      <p class="mt-2 text-[12px] text-sand/55">Thanks, <span id="confirmed-name" class="font-bold text-sand"></span>. Your demo order is in.</p>
+    </div>
+
+    <section id="invoice-panel" class="rounded-2xl border border-white/10 bg-panel/45 p-5 sm:p-8">
+      <div class="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-5">
+        <div>
+          <p class="text-[19px] font-extrabold tracking-[-.06em]">electros<span class="text-sand">.</span></p>
+          <p class="mt-1 text-[10px] text-sand/45">Order invoice</p>
+        </div>
+        <div class="text-right">
+          <p class="text-[9px] font-bold uppercase tracking-[.12em] text-sand/45">Order ID</p>
+          <p id="order-id" class="mt-1 text-[12px] font-extrabold"></p>
+          <p id="order-date" class="mt-1 text-[9px] text-sand/45"></p>
+        </div>
+      </div>
+
+      <div class="grid gap-5 border-b border-white/10 py-5 text-[11px] sm:grid-cols-2">
+        <div>
+          <p class="mb-1.5 text-[9px] font-bold uppercase tracking-[.12em] text-sand/45">Ship to</p>
+          <p id="invoice-name" class="font-bold"></p>
+          <p id="invoice-phone" class="mt-1 text-sand/65"></p>
+          <p id="invoice-address" class="mt-1 leading-5 text-sand/65"></p>
+        </div>
+        <div>
+          <p class="mb-1.5 text-[9px] font-bold uppercase tracking-[.12em] text-sand/45">Payment method</p>
+          <p id="invoice-payment" class="font-bold"></p>
+          <p class="mt-1 text-sand/55">Demo transaction — no payment was collected.</p>
+        </div>
+      </div>
+
+      <div id="invoice-items" class="divide-y divide-white/10"></div>
+      <div class="ml-auto mt-5 max-w-[260px] space-y-2 text-[11px]">
+        <div class="flex justify-between text-sand/60"><span>Subtotal</span><span id="invoice-subtotal"></span></div>
+        <div id="invoice-discount-row" class="hidden justify-between text-sand"><span>Discount</span><span id="invoice-discount"></span></div>
+        <div class="flex justify-between text-sand/60"><span>GST (18%)</span><span id="invoice-gst"></span></div>
+        <div class="flex justify-between border-t border-white/10 pt-3 text-[14px] font-extrabold"><span>Total</span><span id="invoice-total"></span></div>
+      </div>
+    </section>
+
+    <div id="confirmation-actions" class="mt-6 flex flex-col gap-3 sm:flex-row">
+      <button id="download-invoice" class="focus-ring flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-sand text-[11px] font-extrabold text-ink transition hover:bg-[#e8dcc5]" type="button">
+        <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M10 2.5v10m0 0 3.5-3.5M10 12.5 6.5 9M3.5 14.5v2h13v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download invoice
+      </button>
+      <button id="print-invoice" class="focus-ring h-11 flex-1 rounded-xl border border-sand/20 text-[11px] font-bold text-sand transition hover:bg-sand/[.06]" type="button">Print invoice</button>
+      <a href="index.html" class="flex h-11 flex-1 items-center justify-center rounded-xl border border-sand/20 text-[11px] font-bold text-sand transition hover:bg-sand/[.06]">Back to store</a>
+    </div>
+    <p class="mt-4 text-center text-[10px] text-sand/40">This is a demo order confirmation. No payment or delivery has been scheduled.</p>
+  </main>
+
+  <div id="processing-overlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-ink/85 p-5 backdrop-blur-sm" role="status" aria-live="assertive" aria-hidden="true">
+    <div class="rounded-2xl border border-sand/15 bg-panel px-8 py-7 text-center shadow-2xl">
+      <svg class="mx-auto h-9 w-9 animate-spin text-sand" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle class="opacity-25" cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3"/><path class="opacity-90" d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+      <p class="mt-4 text-[13px] font-extrabold">Processing your demo payment</p>
+      <p class="mt-1 text-[10px] text-sand/45">Please keep this window open.</p>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const checkoutForm = document.getElementById("checkout-form");
+    const checkoutMessage = document.getElementById("checkout-message");
+    const couponMessage = document.getElementById("coupon-message");
+    const paymentTabs = Array.from(document.querySelectorAll(".payment-tab"));
+    let customer;
+    let savedItems;
+    let cart;
+    let selectedPayment = "upi";
+    let couponApplied = false;
+    let processing = false;
+    let orderForInvoice = null;
+    let subtotalPaise = 0;
+    const extendedWarrantyPaise = 29900;
+    const damageProtectionPaise = 59900;
+    let upiExpiresAt = Date.now() + 5 * 60 * 1000;
+
+    const formatMoney = (amountInPaise) => new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amountInPaise / 100);
+
+    function showCheckoutMessage(message) {
+      checkoutMessage.textContent = message;
+      checkoutMessage.classList.remove("hidden");
+      checkoutMessage.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function isSignedInUser(user) {
+      return Boolean(
+        user &&
+        user.guest !== true &&
+        typeof user.name === "string" &&
+        user.name.trim() &&
+        typeof user.phone === "string" &&
+        user.phone.replace(/\D/g, "").length >= 10
+      );
+    }
+
+    function readSignedInUser() {
+      try {
+        const savedUser = JSON.parse(localStorage.getItem("electrosUser") || "null");
+        return isSignedInUser(savedUser) ? savedUser : null;
+      } catch (error) {
+        console.error("Unable to read the saved Electros session.", error);
+        return null;
+      }
+    }
+
+    function showSignInRequired() {
+      const modal = document.getElementById("signin-required-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overflow-hidden");
+      modal.querySelector("a[href='login.html']").focus();
+    }
+
+    function closeSignInRequired() {
+      const modal = document.getElementById("signin-required-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overflow-hidden");
+      document.getElementById("pay-now-button").focus();
+    }
+
+    try {
+      savedItems = JSON.parse(localStorage.getItem("electrosCart") || "[]");
+    } catch (error) {
+      console.error("Unable to load the saved cart.", error);
+      showCheckoutMessage("Your saved bag could not be read. Return to the store and try again.");
+    }
+
+    customer = readSignedInUser();
+    if (!Array.isArray(savedItems) || savedItems.length === 0) {
+      window.location.replace("index.html");
+    } else {
+      cart = savedItems.map((item) => {
+        const product = item && products.find((candidate) => candidate.name === item.name);
+        if (!product || !Number.isSafeInteger(item.quantity) || item.quantity < 1) return null;
+        const color = product.colors.find((variant) => variant.name === item.color)
+          ? item.color
+          : product.colors[0].name;
+        return {
+          product,
+          quantity: item.quantity,
+          color,
+          image: product.images[color] || product.image,
+          extendedWarranty: item.extendedWarranty === true,
+          damageProtection: item.damageProtection === true
+        };
+      }).filter(Boolean);
+
+      if (cart.length === 0) {
+        window.location.replace("index.html");
+      } else {
+        if (customer) {
+          document.getElementById("shipping-name").value = customer.name;
+          const savedPhone = typeof customer.phone === "string" ? customer.phone.replace(/^\+91/, "") : "";
+          document.getElementById("shipping-phone").value = savedPhone.replace(/\D/g, "").slice(0, 10);
+        }
+        renderOrderSummary();
+        if (!customer) showSignInRequired();
+      }
+    }
+
+    function getCartItemSubtotalPaise(item) {
+      const addOnsPaise =
+        (item.extendedWarranty ? extendedWarrantyPaise : 0) +
+        (item.damageProtection ? damageProtectionPaise : 0);
+      return (item.product.price * 100 + addOnsPaise) * item.quantity;
+    }
+
+    function renderOrderSummary() {
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById("summary-item-count").textContent = `(${count} ${count === 1 ? "item" : "items"})`;
+      document.getElementById("checkout-items").innerHTML = cart.map((item, itemIndex) => `
+        <article class="flex items-center gap-3 py-3">
+          <img class="h-12 w-12 shrink-0 rounded-lg bg-panel object-cover" src="${item.image}" alt="${item.product.name}" loading="lazy">
+          <div class="min-w-0 flex-1">
+            <h2 class="truncate text-[10px] font-bold">${item.product.name}</h2>
+            <p class="mt-1 text-[9px] text-sand/45">Qty ${item.quantity} · ${item.color}</p>
+            <div class="mt-2 space-y-1.5">
+              <label class="flex cursor-pointer items-start gap-2 text-[9px] leading-4 text-sand/65">
+                <input class="mt-0.5 accent-[#DFD0B8]" type="checkbox" data-checkout-addon="extendedWarranty" data-cart-index="${itemIndex}" ${item.extendedWarranty ? "checked" : ""}>
+                <span>+1 Year Extended Brand Warranty <span class="text-sand/40">(₹299 / item)</span></span>
+              </label>
+              <label class="flex cursor-pointer items-start gap-2 text-[9px] leading-4 text-sand/65">
+                <input class="mt-0.5 accent-[#DFD0B8]" type="checkbox" data-checkout-addon="damageProtection" data-cart-index="${itemIndex}" ${item.damageProtection ? "checked" : ""}>
+                <span>+2 Year Accidental Damage Protection <span class="text-sand/40">(₹599 / item)</span></span>
+              </label>
+            </div>
+          </div>
+          <span class="shrink-0 text-[10px] font-bold">${formatMoney(getCartItemSubtotalPaise(item))}</span>
+        </article>`).join("");
+      subtotalPaise = cart.reduce((sum, item) => sum + getCartItemSubtotalPaise(item), 0);
+      document.getElementById("checkout-subtotal").textContent = formatMoney(subtotalPaise);
+      renderTotals();
+    }
+
+    function renderTotals() {
+      const discountPaise = couponApplied ? Math.round(subtotalPaise * 0.1) : 0;
+      const taxablePaise = subtotalPaise - discountPaise;
+      const gstPaise = Math.round(taxablePaise * 0.18);
+      const totalPaise = taxablePaise + gstPaise;
+      const discountRow = document.getElementById("discount-row");
+      discountRow.classList.toggle("hidden", !couponApplied);
+      discountRow.classList.toggle("flex", couponApplied);
+      document.getElementById("checkout-discount").textContent = `−${formatMoney(discountPaise)}`;
+      document.getElementById("checkout-gst").textContent = formatMoney(gstPaise);
+      document.getElementById("checkout-total").textContent = formatMoney(totalPaise);
+      document.getElementById("pay-button-total").textContent = formatMoney(totalPaise);
+      document.getElementById("upi-amount").textContent = formatMoney(totalPaise);
+      renderUpiQr(totalPaise);
+    }
+
+    function renderUpiQr(totalPaise) {
+      const svg = document.getElementById("upi-qr");
+      const size = 37;
+      const modules = Array.from({ length: size }, () => Array(size).fill(false));
+      const reserved = Array.from({ length: size }, () => Array(size).fill(false));
+      const payload = `upi://pay?pa=store@okaxis&pn=Electros&am=${(totalPaise / 100).toFixed(2)}&cu=INR`;
+
+      function setModule(x, y, dark, isReserved) {
+        if (x < 0 || y < 0 || x >= size || y >= size) return;
+        modules[y][x] = dark;
+        if (isReserved) reserved[y][x] = true;
+      }
+
+      function drawFinder(originX, originY) {
+        for (let y = -1; y <= 7; y += 1) {
+          for (let x = -1; x <= 7; x += 1) {
+            const inside = x >= 0 && x <= 6 && y >= 0 && y <= 6;
+            const dark = inside && (
+              x === 0 || x === 6 || y === 0 || y === 6 ||
+              (x >= 2 && x <= 4 && y >= 2 && y <= 4)
+            );
+            setModule(originX + x, originY + y, dark, true);
+          }
+        }
+      }
+
+      drawFinder(0, 0);
+      drawFinder(size - 7, 0);
+      drawFinder(0, size - 7);
+      for (let offset = -2; offset <= 2; offset += 1) {
+        for (let inner = -2; inner <= 2; inner += 1) {
+          const dark = Math.max(Math.abs(offset), Math.abs(inner)) !== 1;
+          setModule(30 + inner, 30 + offset, dark, true);
+        }
+      }
+      for (let index = 8; index < size - 8; index += 1) {
+        setModule(index, 6, index % 2 === 0, true);
+        setModule(6, index, index % 2 === 0, true);
+      }
+
+      let seed = 2166136261;
+      for (let index = 0; index < payload.length; index += 1) {
+        seed = Math.imul(seed ^ payload.charCodeAt(index), 16777619) >>> 0;
+      }
+      for (let y = 0; y < size; y += 1) {
+        for (let x = 0; x < size; x += 1) {
+          if (reserved[y][x]) continue;
+          seed ^= seed << 13;
+          seed ^= seed >>> 17;
+          seed ^= seed << 5;
+          seed >>>= 0;
+          modules[y][x] = ((seed >>> 31) ^ ((x + y) % 2)) === 1;
+        }
+      }
+
+      const path = [];
+      modules.forEach((row, y) => row.forEach((dark, x) => {
+        if (dark) path.push(`M${x} ${y}h1v1h-1z`);
+      }));
+      svg.innerHTML = `<rect width="${size}" height="${size}" fill="#fff"/><path d="${path.join("")}" fill="#171b20"/>`;
+      svg.dataset.payload = payload;
+      svg.setAttribute("aria-label", `Simulated UPI QR preview for store@okaxis, amount ${formatMoney(totalPaise)}`);
+    }
+
+    function updateUpiCountdown() {
+      const remainingSeconds = Math.max(0, Math.ceil((upiExpiresAt - Date.now()) / 1000));
+      const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
+      const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
+      document.getElementById("upi-countdown").textContent = `${minutes}:${seconds}`;
+    }
+
+    function saveCheckoutCart() {
+      try {
+        localStorage.setItem("electrosCart", JSON.stringify(cart.map((item) => ({
+          name: item.product.name,
+          quantity: item.quantity,
+          color: item.color,
+          image: item.image,
+          extendedWarranty: item.extendedWarranty,
+          damageProtection: item.damageProtection
+        }))));
+        return true;
+      } catch (error) {
+        console.error("Unable to save checkout add-ons.", error);
+        showCheckoutMessage("Your add-on selection could not be saved in this browser.");
+        return false;
+      }
+    }
+
+    document.getElementById("coupon-button").addEventListener("click", () => {
+      const code = document.getElementById("coupon-input").value.trim().toUpperCase();
+      couponMessage.classList.remove("hidden", "text-red-300", "text-sand");
+      if (code !== "FIRST10") {
+        couponApplied = false;
+        couponMessage.textContent = code ? "That code isn’t valid. Try FIRST10." : "Enter a coupon code first.";
+        couponMessage.classList.add("text-red-300");
+        renderTotals();
+        return;
+      }
+      couponApplied = true;
+      couponMessage.textContent = "FIRST10 applied — 10% off your order subtotal.";
+      couponMessage.classList.add("text-sand");
+      document.getElementById("coupon-input").value = "FIRST10";
+      renderTotals();
+    });
+
+    paymentTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        selectedPayment = tab.dataset.payment;
+        paymentTabs.forEach((item) => {
+          const selected = item === tab;
+          item.classList.toggle("payment-active", selected);
+          item.classList.toggle("text-sand/60", !selected);
+          item.setAttribute("aria-selected", String(selected));
+        });
+        document.querySelectorAll(".payment-panel").forEach((panel) => {
+          const selected = panel.id === `${selectedPayment}-panel`;
+          panel.classList.toggle("hidden", !selected);
+          panel.setAttribute("aria-hidden", String(!selected));
+        });
+      });
+    });
+
+    document.getElementById("checkout-items").addEventListener("change", (event) => {
+      const addonCheckbox = event.target.closest("[data-checkout-addon]");
+      if (!addonCheckbox || !["extendedWarranty", "damageProtection"].includes(addonCheckbox.dataset.checkoutAddon)) return;
+      const itemIndex = Number(addonCheckbox.dataset.cartIndex);
+      const item = cart[itemIndex];
+      if (!item) return;
+      const addon = addonCheckbox.dataset.checkoutAddon;
+      const previousValue = item[addon];
+      item[addon] = addonCheckbox.checked;
+      if (!saveCheckoutCart()) item[addon] = previousValue;
+      renderOrderSummary();
+    });
+
+    document.querySelectorAll("[data-signin-close]").forEach((button) => {
+      button.addEventListener("click", closeSignInRequired);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !document.getElementById("signin-required-modal").classList.contains("hidden")) {
+        closeSignInRequired();
+      }
+    });
+    document.getElementById("upi-verify-pay").addEventListener("click", () => {
+      checkoutForm.requestSubmit(document.getElementById("pay-now-button"));
+    });
+    updateUpiCountdown();
+    window.setInterval(updateUpiCountdown, 1000);
+
+    document.getElementById("shipping-phone").addEventListener("input", (event) => {
+      event.target.value = event.target.value.replace(/\D/g, "").slice(0, 10);
+    });
+    document.getElementById("shipping-pin").addEventListener("input", (event) => {
+      event.target.value = event.target.value.replace(/\D/g, "").slice(0, 6);
+    });
+    document.getElementById("card-number").addEventListener("input", (event) => {
+      const digits = event.target.value.replace(/\D/g, "").slice(0, 16);
+      event.target.value = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+    });
+    document.getElementById("card-expiry").addEventListener("input", (event) => {
+      const digits = event.target.value.replace(/\D/g, "").slice(0, 4);
+      event.target.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+    });
+    document.getElementById("card-cvv").addEventListener("input", (event) => {
+      event.target.value = event.target.value.replace(/\D/g, "").slice(0, 4);
+    });
+
+    function validateCheckout() {
+      const fullName = document.getElementById("shipping-name").value.trim();
+      const phone = document.getElementById("shipping-phone").value.trim();
+      const address = document.getElementById("shipping-address").value.trim();
+      const city = document.getElementById("shipping-city").value.trim();
+      const state = document.getElementById("shipping-state").value;
+      const pin = document.getElementById("shipping-pin").value.trim();
+      if (!fullName || !address || !city || !state) {
+        showCheckoutMessage("Complete your name and full shipping address before continuing.");
+        return false;
+      }
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        showCheckoutMessage("Enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.");
+        document.getElementById("shipping-phone").focus();
+        return false;
+      }
+      if (!/^\d{6}$/.test(pin)) {
+        showCheckoutMessage("Enter a valid 6-digit PIN code.");
+        document.getElementById("shipping-pin").focus();
+        return false;
+      }
+      if (selectedPayment === "card") {
+        const cardNumber = document.getElementById("card-number").value.replace(/\D/g, "");
+        const expiry = document.getElementById("card-expiry").value;
+        const cvv = document.getElementById("card-cvv").value;
+        if (!/^\d{16}$/.test(cardNumber)) {
+          showCheckoutMessage("Enter a 16-digit card number.");
+          document.getElementById("card-number").focus();
+          return false;
+        }
+        const expiryMatch = expiry.match(/^(0[1-9]|1[0-2])\/(\d{2})$/);
+        if (!expiryMatch) {
+          showCheckoutMessage("Enter the card expiry in MM/YY format.");
+          document.getElementById("card-expiry").focus();
+          return false;
+        }
+        const expiryDate = new Date(2000 + Number(expiryMatch[2]), Number(expiryMatch[1]), 1);
+        const currentMonth = new Date();
+        currentMonth.setDate(1);
+        currentMonth.setHours(0, 0, 0, 0);
+        if (expiryDate <= currentMonth) {
+          showCheckoutMessage("That card has expired. Enter a future expiry date.");
+          document.getElementById("card-expiry").focus();
+          return false;
+        }
+        if (!/^\d{3,4}$/.test(cvv)) {
+          showCheckoutMessage("Enter a 3- or 4-digit CVV.");
+          document.getElementById("card-cvv").focus();
+          return false;
+        }
+      }
+      checkoutMessage.classList.add("hidden");
+      return true;
+    }
+
+    function getOrderTotals() {
+      const discountPaise = couponApplied ? Math.round(subtotalPaise * 0.1) : 0;
+      const taxablePaise = subtotalPaise - discountPaise;
+      const gstPaise = Math.round(taxablePaise * 0.18);
+      return { discountPaise, gstPaise, totalPaise: taxablePaise + gstPaise };
+    }
+
+    function getPaymentLabel() {
+      if (selectedPayment === "cod") return "Cash on Delivery";
+      if (selectedPayment === "card") return "Card (demo)";
+      return "UPI QR · store@okaxis";
+    }
+
+    function appendPastOrder(order) {
+      const savedOrder = {
+        orderId: order.id,
+        date: order.createdAt,
+        items: order.items.map((item) => ({
+          productId: item.product.id,
+          name: item.product.name,
+          category: item.product.category,
+          price: item.product.price,
+          quantity: item.quantity,
+          image: item.image,
+          color: item.color,
+          extendedWarranty: item.extendedWarranty === true,
+          damageProtection: item.damageProtection === true
+        })),
+        subtotalPaise: order.subtotalPaise,
+        discountPaise: order.discountPaise,
+        gstPaise: order.gstPaise,
+        totalPaise: order.totalPaise,
+        totalRupees: order.totalPaise / 100,
+        shippingAddress: {
+          fullName: order.name,
+          phone: `+91${order.phone}`,
+          address: order.address,
+          city: order.city,
+          state: order.state,
+          pin: order.pin
+        },
+        customerPhone: typeof customer.phone === "string" ? customer.phone : null,
+        paymentMethod: order.payment,
+        status: "Order Placed"
+      };
+
+      try {
+        const serializedOrders = localStorage.getItem("orders");
+        const orders = serializedOrders ? JSON.parse(serializedOrders) : [];
+        if (!Array.isArray(orders)) throw new TypeError("Saved orders must be an array.");
+        orders.push(savedOrder);
+        localStorage.setItem("orders", JSON.stringify(orders));
+        return true;
+      } catch (error) {
+        console.error("Unable to save the past order.", error);
+        return false;
+      }
+    }
+
+    function removeSavedOrder(orderId) {
+      try {
+        const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+        if (!Array.isArray(orders)) throw new TypeError("Saved orders must be an array.");
+        const orderIndex = orders.map((order) => order.orderId).lastIndexOf(orderId);
+        if (orderIndex !== -1) orders.splice(orderIndex, 1);
+        localStorage.setItem("orders", JSON.stringify(orders));
+      } catch (error) {
+        console.error("Unable to roll back the saved order.", error);
+      }
+    }
+
+    function hideProcessing(payButton) {
+      const overlay = document.getElementById("processing-overlay");
+      overlay.classList.add("hidden");
+      overlay.classList.remove("flex");
+      overlay.setAttribute("aria-hidden", "true");
+      payButton.disabled = false;
+      document.getElementById("pay-button-label").textContent = "Pay Now";
+      processing = false;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function showConfirmation(order) {
+      document.getElementById("checkout-view").classList.add("hidden");
+      document.getElementById("checkout-header").classList.add("hidden");
+      document.getElementById("confirmation-view").classList.remove("hidden");
+      document.getElementById("confirmed-name").textContent = order.name;
+      document.getElementById("order-id").textContent = order.id;
+      document.getElementById("order-date").textContent = order.date;
+      document.getElementById("invoice-name").textContent = order.name;
+      document.getElementById("invoice-phone").textContent = `+91 ${order.phone}`;
+      document.getElementById("invoice-address").textContent = `${order.address}, ${order.city}, ${order.state} ${order.pin}`;
+      document.getElementById("invoice-payment").textContent = order.payment;
+      document.getElementById("invoice-items").innerHTML = order.items.map((item) => `
+        <article class="border-b border-white/10 py-3 text-[10px]">
+          <div class="flex items-center justify-between gap-3">
+            <span class="font-bold">${escapeHtml(item.product.name)} <span class="text-sand/50">× ${item.quantity}</span></span>
+            <span class="font-bold">${formatMoney(item.product.price * item.quantity * 100)}</span>
+          </div>
+          <p class="mt-1 text-[9px] text-sand/45">Colour: ${escapeHtml(item.color)}</p>
+          ${item.extendedWarranty ? `<p class="mt-1 text-[9px] text-sand/60">+1 Year Extended Brand Warranty × ${item.quantity} · ${formatMoney(extendedWarrantyPaise * item.quantity)}</p>` : ""}
+          ${item.damageProtection ? `<p class="mt-1 text-[9px] text-sand/60">+2 Year Accidental Damage Protection × ${item.quantity} · ${formatMoney(damageProtectionPaise * item.quantity)}</p>` : ""}
+        </article>`).join("");
+      document.getElementById("invoice-subtotal").textContent = formatMoney(order.subtotalPaise);
+      document.getElementById("invoice-discount-row").classList.toggle("hidden", order.discountPaise === 0);
+      document.getElementById("invoice-discount-row").classList.toggle("flex", order.discountPaise !== 0);
+      document.getElementById("invoice-discount").textContent = `−${formatMoney(order.discountPaise)}`;
+      document.getElementById("invoice-gst").textContent = formatMoney(order.gstPaise);
+      document.getElementById("invoice-total").textContent = formatMoney(order.totalPaise);
+    }
+
+    checkoutForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (processing) return;
+      customer = readSignedInUser();
+      if (!customer) {
+        showSignInRequired();
+        return;
+      }
+      if (!validateCheckout()) return;
+      processing = true;
+      const payButton = document.getElementById("pay-now-button");
+      payButton.disabled = true;
+      document.getElementById("pay-button-label").textContent = "Processing...";
+      document.getElementById("processing-overlay").classList.remove("hidden");
+      document.getElementById("processing-overlay").classList.add("flex");
+      document.getElementById("processing-overlay").setAttribute("aria-hidden", "false");
+
+      window.setTimeout(() => {
+        const totals = getOrderTotals();
+        const createdAt = new Date().toISOString();
+        orderForInvoice = {
+          ...totals,
+          id: `EL-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+          date: new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date()),
+          createdAt,
+          name: document.getElementById("shipping-name").value.trim(),
+          phone: document.getElementById("shipping-phone").value.trim(),
+          address: document.getElementById("shipping-address").value.trim(),
+          city: document.getElementById("shipping-city").value.trim(),
+          state: document.getElementById("shipping-state").value,
+          pin: document.getElementById("shipping-pin").value.trim(),
+          payment: getPaymentLabel(),
+          subtotalPaise,
+          items: cart.map((item) => ({ ...item }))
+        };
+
+        if (!appendPastOrder(orderForInvoice)) {
+          hideProcessing(payButton);
+          showCheckoutMessage("Your order history could not be saved, so your cart was kept. Please try again.");
+          return;
+        }
+
+        try {
+          localStorage.removeItem("electrosCart");
+        } catch (error) {
+          console.error("Unable to clear the completed cart.", error);
+          removeSavedOrder(orderForInvoice.id);
+          hideProcessing(payButton);
+          showCheckoutMessage("We couldn’t clear the saved cart, so the order was not completed. Please try again.");
+          return;
+        }
+
+        document.getElementById("processing-overlay").classList.add("hidden");
+        document.getElementById("processing-overlay").classList.remove("flex");
+        document.getElementById("processing-overlay").setAttribute("aria-hidden", "true");
+        showConfirmation(orderForInvoice);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 2000);
+    });
+
+    document.getElementById("download-invoice").addEventListener("click", () => {
+      if (!orderForInvoice) return;
+      const invoiceRows = orderForInvoice.items.map((item) => {
+        const rows = [
+          `<tr><td>${escapeHtml(item.product.name)} × ${item.quantity} · ${escapeHtml(item.color)}</td><td>${formatMoney(item.product.price * item.quantity * 100)}</td></tr>`
+        ];
+        if (item.extendedWarranty) {
+          rows.push(`<tr><td>+1 Year Extended Brand Warranty × ${item.quantity}</td><td>${formatMoney(extendedWarrantyPaise * item.quantity)}</td></tr>`);
+        }
+        if (item.damageProtection) {
+          rows.push(`<tr><td>+2 Year Accidental Damage Protection × ${item.quantity}</td><td>${formatMoney(damageProtectionPaise * item.quantity)}</td></tr>`);
+        }
+        return rows.join("");
+      }).join("");
+      const discountRow = orderForInvoice.discountPaise
+        ? `<tr><td>Discount</td><td>−${formatMoney(orderForInvoice.discountPaise)}</td></tr>`
+        : "";
+      const invoice = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Electros invoice ${escapeHtml(orderForInvoice.id)}</title><style>body{font:15px Arial,sans-serif;color:#222831;margin:40px auto;max-width:760px;padding:24px}h1{margin-bottom:4px}small{color:#555}table{width:100%;border-collapse:collapse;margin:24px 0}td{padding:10px;border-bottom:1px solid #ddd}td:last-child{text-align:right}.totals{margin-left:auto;width:260px}.totals p{display:flex;justify-content:space-between}.note{margin-top:30px;color:#666;font-size:12px}</style><h1>electros.</h1><small>Order invoice · ${escapeHtml(orderForInvoice.date)}</small><p><strong>Order ID:</strong> ${escapeHtml(orderForInvoice.id)}</p><p><strong>Ship to:</strong> ${escapeHtml(orderForInvoice.name)}, +91 ${escapeHtml(orderForInvoice.phone)}<br>${escapeHtml(orderForInvoice.address)}, ${escapeHtml(orderForInvoice.city)}, ${escapeHtml(orderForInvoice.state)} ${escapeHtml(orderForInvoice.pin)}</p><p><strong>Payment:</strong> ${escapeHtml(orderForInvoice.payment)}</p><table>${invoiceRows}</table><div class="totals"><p><span>Subtotal</span><span>${formatMoney(orderForInvoice.subtotalPaise)}</span></p>${discountRow}<p><span>GST (18%)</span><span>${formatMoney(orderForInvoice.gstPaise)}</span></p><p><strong>Total</strong><strong>${formatMoney(orderForInvoice.totalPaise)}</strong></p></div><p class="note">Demo invoice only. No payment was collected and no delivery has been scheduled.</p></html>`;
+      const invoiceBlob = new Blob([invoice], { type: "text/html;charset=utf-8" });
+      const invoiceUrl = URL.createObjectURL(invoiceBlob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = invoiceUrl;
+      downloadLink.download = `Electros-${orderForInvoice.id}.html`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+      window.setTimeout(() => URL.revokeObjectURL(invoiceUrl), 1000);
+    });
+
+    document.getElementById("print-invoice").addEventListener("click", () => {
+      if (orderForInvoice) window.print();
+    });
+  </script>
+</body>
+</html>

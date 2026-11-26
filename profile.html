@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#222831">
+  <meta name="description" content="View your Electros orders and saved Volts.">
+  <title>Your profile — Electros</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#222831",
+            panel: "#393E46",
+            muted: "#948979",
+            sand: "#DFD0B8"
+          },
+          fontFamily: { sans: ["Manrope", "sans-serif"] }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #222831; color: #DFD0B8; font-family: Manrope, sans-serif; }
+    button { font: inherit; }
+    .profile-tab.tab-active,
+    .profile-tab.tab-active:hover {
+      background: #DFD0B8;
+      border-color: #DFD0B8;
+      color: #111827;
+      font-weight: 700;
+    }
+    .profile-tab.tab-active span { color: #111827; opacity: 1; font-weight: 700; }
+    .focus-ring:focus { outline: 2px solid rgba(223,208,184,.8); outline-offset: 2px; }
+    .toast-visible { opacity: 1; transform: translate(-50%, 0); }
+    .volted-icon { filter: drop-shadow(0 0 4px rgba(250,204,21,.72)); }
+  </style>
+</head>
+<body>
+  <header class="sticky top-0 z-20 border-b border-white/10 bg-ink/90 backdrop-blur-xl">
+    <div class="mx-auto flex h-[68px] max-w-[1120px] items-center justify-between gap-4 px-5 sm:px-8">
+      <a href="index.html" class="flex shrink-0 items-center gap-2.5" aria-label="Electros home">
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-sand text-ink">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.7 13h5.1l-.5 8.2L18.3 11h-5.2l.1-8.2Z" fill="currentColor"/></svg>
+        </span>
+        <span class="text-xl font-extrabold tracking-[-.07em]">electros<span class="text-sand">.</span></span>
+      </a>
+      <div class="flex items-center gap-3">
+        <span class="max-w-[120px] truncate text-[10px] font-bold text-sand/60 sm:max-w-none sm:text-[11px]">Hi, <span id="profile-name"></span></span>
+        <button id="profile-logout" class="hidden rounded-lg border border-white/10 px-2.5 py-1.5 text-[9px] font-bold text-sand/65 transition hover:border-white/25 hover:text-sand sm:text-[10px]" type="button">Logout</button>
+        <a id="cart-button" href="index.html" class="relative grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[.045] transition hover:border-white/25" aria-label="Shopping cart, 0 items">
+          <svg viewBox="0 0 24 24" class="h-[17px] w-[17px]" fill="none" aria-hidden="true"><path d="M4.5 8h15l-1.1 11h-13L4.5 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V6.2a3 3 0 0 1 6 0V8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span id="cart-count" class="absolute -right-1.5 -top-1.5 grid h-[17px] min-w-[17px] place-items-center rounded-full bg-sand px-1 text-[9px] font-extrabold text-ink">0</span>
+        </a>
+        <a href="index.html#shop" class="rounded-lg bg-sand px-3 py-2 text-[10px] font-extrabold text-ink transition hover:bg-[#e8dcc5]">Shop</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-[1120px] px-5 py-8 sm:px-8 sm:py-12">
+    <div class="mb-7">
+      <p class="mb-2 text-[10px] font-extrabold uppercase tracking-[.18em] text-muted">Your Electros</p>
+      <h1 class="text-[30px] font-extrabold tracking-[-.055em] sm:text-[38px]">Your account<span class="text-sand/45">.</span></h1>
+    </div>
+
+    <div class="mb-6 flex gap-2 border-b border-white/10 pb-3" role="tablist" aria-label="Your account">
+      <button id="orders-tab" class="profile-tab tab-active rounded-xl border border-transparent px-4 py-2.5 text-[11px] font-extrabold transition" type="button" role="tab" aria-selected="true" aria-controls="orders-panel" data-tab="orders">
+        My Orders <span id="orders-count" class="ml-1 opacity-65">0</span>
+      </button>
+      <button id="wishlist-tab" class="profile-tab rounded-xl border border-transparent px-4 py-2.5 text-[11px] font-extrabold text-sand/65 transition hover:border-white/15 hover:text-sand" type="button" role="tab" aria-selected="false" aria-controls="wishlist-panel" data-tab="wishlist">
+        My Volts <span id="wishlist-count" class="ml-1 opacity-65">0</span>
+      </button>
+      <button id="reviews-tab" class="profile-tab rounded-xl border border-transparent px-4 py-2.5 text-[11px] font-extrabold text-sand/65 transition hover:border-white/15 hover:text-sand" type="button" role="tab" aria-selected="false" aria-controls="reviews-panel" data-tab="reviews">
+        My Reviews <span id="reviews-count" class="ml-1 opacity-65">0</span>
+      </button>
+    </div>
+
+    <section id="orders-panel" role="tabpanel" aria-labelledby="orders-tab">
+      <div id="orders-list" class="space-y-4"></div>
+      <div id="orders-empty" class="hidden rounded-2xl border border-white/10 bg-panel/45 px-5 py-12 text-center">
+        <p class="text-[15px] font-extrabold">No orders just yet.</p>
+        <p class="mt-2 text-[11px] text-sand/50">Your purchases will show up here.</p>
+        <a href="index.html#shop" class="mt-5 inline-flex rounded-xl bg-sand px-4 py-2.5 text-[10px] font-extrabold text-ink">Explore the store</a>
+      </div>
+    </section>
+
+    <section id="wishlist-panel" class="hidden" role="tabpanel" aria-labelledby="wishlist-tab">
+      <div id="wishlist-list" class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4"></div>
+      <div id="wishlist-empty" class="hidden rounded-2xl border border-white/10 bg-panel/45 px-5 py-12 text-center">
+        <p class="text-[15px] font-extrabold">Your Volts are waiting to be charged.</p>
+        <p class="mt-2 text-[11px] text-sand/50">Save products with a Volt and they’ll be waiting here.</p>
+        <a href="index.html#shop" class="mt-5 inline-flex rounded-xl bg-sand px-4 py-2.5 text-[10px] font-extrabold text-ink">Find a favourite</a>
+      </div>
+    </section>
+
+    <section id="reviews-panel" class="hidden" role="tabpanel" aria-labelledby="reviews-tab">
+      <div id="reviews-list" class="space-y-3"></div>
+      <div id="reviews-empty" class="hidden rounded-2xl border border-white/10 bg-panel/45 px-5 py-12 text-center">
+        <p class="text-[15px] font-extrabold">No reviews from you yet.</p>
+        <p class="mt-2 text-[11px] text-sand/50">After a purchase, share your experience from a product’s Quick View.</p>
+        <a href="index.html#shop" class="mt-5 inline-flex rounded-xl bg-sand px-4 py-2.5 text-[10px] font-extrabold text-ink">Explore the store</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="profile-toast" class="pointer-events-none fixed bottom-5 left-1/2 z-50 -translate-x-1/2 translate-y-3 rounded-xl border border-white/10 bg-panel px-5 py-3 text-center text-[11px] font-semibold text-sand opacity-0 shadow-2xl transition-all" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script>
+    const ordersList = document.getElementById("orders-list");
+    const wishlistList = document.getElementById("wishlist-list");
+    const ordersEmpty = document.getElementById("orders-empty");
+    const wishlistEmpty = document.getElementById("wishlist-empty");
+    const reviewsList = document.getElementById("reviews-list");
+    const reviewsEmpty = document.getElementById("reviews-empty");
+    let orders = [];
+    let wishlistIds = [];
+    let productReviews = [];
+    let user = null;
+    let toastTimer;
+
+    function showToast(message) {
+      const toast = document.getElementById("profile-toast");
+      toast.textContent = message;
+      toast.classList.remove("opacity-0", "translate-y-3");
+      toast.classList.add("toast-visible");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-3");
+        toast.classList.remove("toast-visible");
+      }, 2400);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function formatMoney(amountInPaise) {
+      return new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amountInPaise / 100);
+    }
+
+    function readLocalArray(key) {
+      const label = key === "orders" ? "orders" : key === "productReviews" ? "reviews" : "wishlist";
+      let serialized;
+      try {
+        serialized = localStorage.getItem(key);
+      } catch (error) {
+        console.error(`Unable to read ${key} from local storage.`, error);
+        showToast(`Could not load your ${label}.`);
+        return [];
+      }
+      if (!serialized) return [];
+      try {
+        const values = JSON.parse(serialized);
+        if (!Array.isArray(values)) throw new TypeError(`${key} must be an array.`);
+        return values;
+      } catch (error) {
+        console.error(`Invalid ${key} data in local storage.`, error);
+        showToast(`Your saved ${label} could not be read.`);
+        return [];
+      }
+    }
+
+    function getReviewerId(profileUser) {
+      if (!profileUser || profileUser.guest || typeof profileUser.phone !== "string") return "";
+      return profileUser.phone.replace(/\D/g, "");
+    }
+
+    function saveArray(key, values) {
+      try {
+        localStorage.setItem(key, JSON.stringify(values));
+        return true;
+      } catch (error) {
+        console.error(`Unable to save ${key} to local storage.`, error);
+        showToast(`Could not save your ${key === "orders" ? "orders" : "wishlist"}.`);
+        return false;
+      }
+    }
+
+    function getProduct(item) {
+      if (!item || typeof item !== "object") return undefined;
+      return products.find((product) => product.id === item.productId)
+        || products.find((product) => product.name === item.name);
+    }
+
+    function renderOrders() {
+      const validOrders = orders.filter((order) => order && typeof order.orderId === "string" && Array.isArray(order.items));
+      document.getElementById("orders-count").textContent = validOrders.length;
+      ordersEmpty.classList.toggle("hidden", validOrders.length > 0);
+      ordersList.innerHTML = [...validOrders].reverse().map((order) => {
+        const status = typeof order.status === "string" ? order.status : "Order Placed";
+        const address = order.shippingAddress;
+        const addressText = address
+          ? [address.address, address.city, address.state, address.pin].filter(Boolean).join(", ")
+          : "";
+        const orderDate = new Date(order.date);
+        const displayDate = Number.isNaN(orderDate.getTime())
+          ? "Date unavailable"
+          : new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(orderDate);
+        const totalPaise = Number.isSafeInteger(order.totalPaise)
+          ? order.totalPaise
+          : Math.round(Number(order.totalRupees || 0) * 100);
+        const itemsMarkup = order.items.map((item) => {
+          const product = getProduct(item);
+          const name = product ? product.name : item.name || "Product";
+          const image = product ? product.image : item.image || "";
+          const quantity = Number.isSafeInteger(item.quantity) && item.quantity > 0 ? item.quantity : 1;
+          const addOns = [
+            item.extendedWarranty ? `+1 Year Extended Brand Warranty · ${formatMoney(29900 * quantity)}` : "",
+            item.damageProtection ? `+2 Year Accidental Damage Protection · ${formatMoney(59900 * quantity)}` : ""
+          ].filter(Boolean);
+          return `<div class="flex min-w-0 items-center gap-2.5">
+            <img class="h-12 w-12 shrink-0 rounded-lg bg-panel object-cover" src="${escapeHtml(image)}" alt="${escapeHtml(name)}" loading="lazy">
+            <div class="min-w-0"><p class="truncate text-[10px] font-bold">${escapeHtml(name)}</p><p class="mt-1 text-[9px] text-sand/45">Qty ${quantity}${item.color ? ` · ${escapeHtml(item.color)}` : ""}</p>${addOns.map((addOn) => `<p class="mt-1 text-[8px] leading-4 text-sand/55">${escapeHtml(addOn)}</p>`).join("")}</div>
+          </div>`;
+        }).join("");
+        const cancelled = status.toLowerCase() === "cancelled";
+        return `<article class="rounded-2xl border border-white/10 bg-panel/45 p-4 sm:p-5" data-order-id="${escapeHtml(order.orderId)}">
+          <div class="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-4">
+            <div><p class="text-[9px] font-bold uppercase tracking-[.12em] text-sand/45">Order ID</p><p class="mt-1 text-[11px] font-extrabold">${escapeHtml(order.orderId)}</p><p class="mt-1 text-[9px] text-sand/45">${escapeHtml(displayDate)}</p></div>
+            <span class="rounded-full border ${cancelled ? "border-[#ff5364]/30 bg-[#ff5364]/10 text-[#ff8993]" : "border-sand/20 bg-sand/[.07] text-sand"} px-3 py-1 text-[9px] font-bold">${escapeHtml(status)}</span>
+          </div>
+          <div class="grid gap-3 py-4 sm:grid-cols-2">${itemsMarkup}</div>
+          ${addressText ? `<p class="border-t border-white/10 pt-3 text-[9px] leading-4 text-sand/45">Delivering to: ${escapeHtml(addressText)}</p>` : ""}
+          <div class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+            <p class="text-[11px] text-sand/55">Total paid <strong class="ml-1 text-[13px] text-sand">${formatMoney(totalPaise)}</strong></p>
+            <div class="flex flex-wrap gap-2">
+              <a class="order-action rounded-lg bg-sand px-3 py-2 text-[9px] font-extrabold text-ink transition hover:bg-[#e8dcc5]" href="support.html?orderId=${escapeHtml(encodeURIComponent(order.orderId))}">Track</a>
+              <button class="order-action rounded-lg border border-white/15 px-3 py-2 text-[9px] font-bold text-sand/65 transition hover:border-white/30 hover:text-sand" data-order-action="cancel" data-order-id="${escapeHtml(order.orderId)}" type="button" ${cancelled ? "disabled" : ""}>${cancelled ? "Cancelled" : "Cancel Order"}</button>
+              <button class="order-action rounded-lg bg-sand px-3 py-2 text-[9px] font-extrabold text-ink transition hover:bg-[#e8dcc5]" data-order-action="reorder" data-order-id="${escapeHtml(order.orderId)}" type="button">Reorder</button>
+            </div>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    function renderWishlist() {
+      const savedProducts = wishlistIds
+        .map((id) => products.find((product) => product.id === id))
+        .filter(Boolean);
+      document.getElementById("wishlist-count").textContent = savedProducts.length;
+      wishlistEmpty.classList.toggle("hidden", savedProducts.length > 0);
+      wishlistList.innerHTML = savedProducts.map((product) => `
+        <article class="overflow-hidden rounded-2xl border border-white/10 bg-panel/45">
+          <div class="relative aspect-square overflow-hidden bg-panel">
+            <img class="h-full w-full object-cover" src="${product.image}" alt="${escapeHtml(product.name)}" loading="lazy">
+            <button class="wishlist-action absolute right-2.5 top-2.5 grid h-8 w-8 place-items-center rounded-full border border-[#FACC15]/35 bg-[#FACC15]/10 text-[#FACC15] transition hover:bg-[#FACC15]/20" data-wishlist-action="remove" data-product-id="${product.id}" type="button" aria-label="Volted. Remove ${escapeHtml(product.name)} from Volts" title="Volted">
+              <svg viewBox="0 0 24 24" class="volt-icon volted-icon h-4 w-4" fill="none" aria-hidden="true"><path d="M13.2 2.8 5.7 13h5.1l-.5 8.2L18.3 11h-5.2l.1-8.2Z" fill="#FACC15" stroke="#FACC15" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <div class="p-3 sm:p-4">
+            <p class="text-[8px] font-bold uppercase tracking-[.12em] text-muted">${escapeHtml(product.category)}</p>
+            <h2 class="mt-1 truncate text-[11px] font-extrabold sm:text-[13px]">${escapeHtml(product.name)}</h2>
+            <p class="mt-1 text-[11px] font-bold">${formatMoney(product.price * 100)}</p>
+            <button class="wishlist-action mt-3 h-9 w-full rounded-lg bg-sand text-[9px] font-extrabold text-ink transition hover:bg-[#e8dcc5] sm:text-[10px]" data-wishlist-action="move" data-product-id="${product.id}" type="button">Move to Cart</button>
+            <button class="wishlist-action mt-2 h-8 w-full rounded-lg border border-white/10 text-[9px] font-bold text-sand/60 transition hover:border-white/25 hover:text-sand" data-wishlist-action="remove" data-product-id="${product.id}" type="button">Remove</button>
+          </div>
+        </article>`).join("");
+    }
+
+    function renderReviews() {
+      const reviewerId = getReviewerId(user);
+      const ownReviews = productReviews
+        .filter((review) => reviewerId && review.reviewerId === reviewerId)
+        .reverse();
+      document.getElementById("reviews-count").textContent = ownReviews.length;
+      reviewsEmpty.classList.toggle("hidden", ownReviews.length > 0);
+      reviewsList.innerHTML = ownReviews.map((review) => {
+        const product = products.find((candidate) => candidate.id === review.productId);
+        if (!product) return "";
+        const reviewDate = new Date(review.createdAt);
+        const dateLabel = Number.isNaN(reviewDate.getTime())
+          ? ""
+          : new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(reviewDate);
+        const stars = Array.from({ length: 5 }, (_, index) =>
+          `<span class="${index < review.rating ? "text-[#FACC15]" : "text-white/20"}">★</span>`
+        ).join("");
+        return `<article class="flex gap-3 rounded-2xl border border-white/10 bg-panel/45 p-4 sm:p-5">
+          <img class="h-16 w-16 shrink-0 rounded-xl bg-panel object-cover" src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy">
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <h2 class="text-[12px] font-extrabold">${escapeHtml(product.name)}</h2>
+                <p class="mt-1 text-[9px] text-sand/45">${escapeHtml(product.category)}${dateLabel ? ` · ${escapeHtml(dateLabel)}` : ""}</p>
+              </div>
+              <span class="rounded-full border border-emerald-300/20 bg-emerald-300/[.07] px-2.5 py-1 text-[8px] font-bold text-emerald-200">Verified Purchase</span>
+            </div>
+            <p class="mt-2 text-[12px] leading-none" aria-label="${review.rating} out of 5 stars">${stars}</p>
+            <p class="mt-2 whitespace-pre-wrap break-words text-[11px] leading-5 text-white/65">${escapeHtml(review.comment)}</p>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    function showTab(tabName, updateHash) {
+      const showWishlist = tabName === "wishlist";
+      const showReviews = tabName === "reviews";
+      const showOrders = !showWishlist && !showReviews;
+      document.getElementById("orders-panel").classList.toggle("hidden", !showOrders);
+      document.getElementById("wishlist-panel").classList.toggle("hidden", !showWishlist);
+      document.getElementById("reviews-panel").classList.toggle("hidden", !showReviews);
+      document.getElementById("orders-tab").classList.toggle("tab-active", showOrders);
+      document.getElementById("wishlist-tab").classList.toggle("tab-active", showWishlist);
+      document.getElementById("reviews-tab").classList.toggle("tab-active", showReviews);
+      document.getElementById("orders-tab").setAttribute("aria-selected", String(showOrders));
+      document.getElementById("wishlist-tab").setAttribute("aria-selected", String(showWishlist));
+      document.getElementById("reviews-tab").setAttribute("aria-selected", String(showReviews));
+      if (updateHash) history.replaceState(null, "", showWishlist ? "#my-wishlist" : showReviews ? "#my-reviews" : "#my-orders");
+    }
+
+    function updateCartCount() {
+      let count = 0;
+      try {
+        const savedCart = JSON.parse(localStorage.getItem("electrosCart") || "[]");
+        if (Array.isArray(savedCart)) {
+          count = savedCart.reduce((sum, item) => sum + (Number.isSafeInteger(item.quantity) && item.quantity > 0 ? item.quantity : 0), 0);
+        }
+      } catch (error) {
+        console.error("Unable to read the cart count.", error);
+      }
+      document.getElementById("cart-count").textContent = count;
+      document.getElementById("cart-button").setAttribute("aria-label", `Shopping cart, ${count} ${count === 1 ? "item" : "items"}`);
+    }
+
+    function saveCart(cart) {
+      try {
+        localStorage.setItem("electrosCart", JSON.stringify(cart));
+        updateCartCount();
+        return true;
+      } catch (error) {
+        console.error("Unable to save the cart.", error);
+        showToast("Could not save your cart. Please try again.");
+        return false;
+      }
+    }
+
+    function addProductsToCart(additions) {
+      let cart;
+      try {
+        cart = JSON.parse(localStorage.getItem("electrosCart") || "[]");
+        if (!Array.isArray(cart)) throw new TypeError("Saved cart must be an array.");
+      } catch (error) {
+        console.error("Unable to read the cart.", error);
+        showToast("Your cart data could not be read.");
+        return false;
+      }
+
+      for (const { product, quantity } of additions) {
+        const existing = cart.find((item) => item.name === product.name);
+        if (existing && Number.isSafeInteger(existing.quantity) && existing.quantity > 0) existing.quantity += quantity;
+        else if (!existing) cart.push({ name: product.name, quantity });
+        else {
+          console.error("Invalid quantity in saved cart item.", existing);
+          showToast("Your cart has an invalid item. Please remove it from the store and try again.");
+          return false;
+        }
+      }
+      return saveCart(cart);
+    }
+
+    function addProductToCart(product, quantity) {
+      return addProductsToCart([{ product, quantity }]);
+    }
+
+    function saveWishlist() {
+      return saveArray("wishlist", wishlistIds);
+    }
+
+    document.getElementById("orders-tab").addEventListener("click", () => showTab("orders", true));
+    document.getElementById("wishlist-tab").addEventListener("click", () => showTab("wishlist", true));
+    document.getElementById("reviews-tab").addEventListener("click", () => showTab("reviews", true));
+
+    ordersList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-order-action]");
+      if (!button) return;
+      const order = orders.find((item) => item.orderId === button.dataset.orderId);
+      if (!order) return;
+
+      if (button.dataset.orderAction === "cancel") {
+        if (order.status === "Cancelled") return;
+        const previousStatus = order.status;
+        order.status = "Cancelled";
+        if (!saveArray("orders", orders)) {
+          order.status = previousStatus;
+          return;
+        }
+        renderOrders();
+        showToast("Order cancelled.");
+        return;
+      }
+
+      const unavailable = [];
+      const itemsToReorder = [];
+      order.items.forEach((item) => {
+        const product = getProduct(item);
+        if (!product) unavailable.push(item && item.name ? item.name : "An item");
+        else itemsToReorder.push({ product, quantity: Number.isSafeInteger(item.quantity) && item.quantity > 0 ? item.quantity : 1 });
+      });
+      if (itemsToReorder.length > 0 && !addProductsToCart(itemsToReorder)) return;
+      showToast(unavailable.length
+        ? `Some products are no longer available: ${unavailable.join(", ")}.`
+        : "Items from this order were added to your cart.");
+    });
+
+    wishlistList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-wishlist-action]");
+      if (!button) return;
+      const product = products.find((item) => item.id === button.dataset.productId);
+      if (!product) return;
+
+      if (button.dataset.wishlistAction === "move") {
+        if (!addProductToCart(product, 1)) return;
+        wishlistIds = wishlistIds.filter((id) => id !== product.id);
+        if (!saveWishlist()) {
+          wishlistIds = [...wishlistIds, product.id];
+          return;
+        }
+        renderWishlist();
+        showToast(`${product.name} moved to your cart.`);
+        return;
+      }
+
+      wishlistIds = wishlistIds.filter((id) => id !== product.id);
+      if (!saveWishlist()) return;
+      renderWishlist();
+      showToast(`${product.name} removed from your Volts.`);
+    });
+
+    const profileName = document.getElementById("profile-name");
+    const logoutButton = document.getElementById("profile-logout");
+    try {
+      user = JSON.parse(localStorage.getItem("electrosUser") || "null");
+    } catch (error) {
+      console.error("Unable to read the saved user.", error);
+      showToast("Your profile details could not be read.");
+    }
+    profileName.textContent = user && typeof user.name === "string" ? user.name : "Guest";
+    if (user && typeof user.name === "string") logoutButton.classList.remove("hidden");
+    logoutButton.addEventListener("click", () => {
+      try {
+        localStorage.removeItem("electrosUser");
+      } catch (error) {
+        console.error("Unable to log out.", error);
+        showToast("Could not log out. Please try again.");
+        return;
+      }
+      window.location.href = "index.html";
+    });
+
+    orders = readLocalArray("orders");
+    wishlistIds = [...new Set(readLocalArray("wishlist").filter((id) =>
+      typeof id === "string" && products.some((product) => product.id === id)
+    ))];
+    const reviewerId = getReviewerId(user);
+    productReviews = readLocalArray("productReviews").filter((review) =>
+      review &&
+      reviewerId &&
+      review.reviewerId === reviewerId &&
+      products.some((product) => product.id === review.productId) &&
+      Number.isInteger(review.rating) &&
+      review.rating >= 1 &&
+      review.rating <= 5 &&
+      typeof review.userName === "string" &&
+      review.userName.trim().length > 0 &&
+      typeof review.comment === "string" &&
+      review.comment.trim().length > 0 &&
+      typeof review.createdAt === "string" &&
+      review.verifiedPurchase === true
+    );
+    renderOrders();
+    renderWishlist();
+    renderReviews();
+    updateCartCount();
+    showTab(
+      window.location.hash === "#my-wishlist" ? "wishlist" : window.location.hash === "#my-reviews" ? "reviews" : "orders",
+      false
+    );
+  </script>
+</body>
+</html>
